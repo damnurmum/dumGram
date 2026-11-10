@@ -19,7 +19,7 @@ import org.telegram.utils.settings.DumSettings;
 
 import java.util.ArrayList;
 
-// settings > dumgram. new fork toggles go here
+// settings > dumGram. new fork toggles go here
 public class DumSettingsActivity extends UniversalFragment {
     private static final int ID_SHOW_PEER_ID = 1;
     private static final int ID_MESSAGE_SECONDS = 2;
@@ -32,7 +32,7 @@ public class DumSettingsActivity extends UniversalFragment {
     private static final int ID_RESTART = 9;
     private static final int ID_BROWSER = 10;
 
-    private static final String REPO_URL = "https://github.com/damnurmum/dumgram";
+    private static final String REPO_URL = "https://github.com/damnurmum/dumGram";
 
     // tabs are read once when the main screen is built, so after touching them we offer a restart
     private boolean tabsChanged;

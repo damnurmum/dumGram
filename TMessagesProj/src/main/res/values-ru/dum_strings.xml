@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="DumSettings">dumgram</string>
+    <string name="DumSettings">dumGram</string>
     <string name="DumSettingsInfo">Функции и настройки форка</string>
 
     <string name="DumProfileHeader">Профиль</string>
@@ -46,6 +46,6 @@
     <string name="DumDcAmsterdam">(Амстердам)</string>
     <string name="DumDcSingapore">(Сингапур)</string>
 
-    <string name="DumPurchasesUnavailable">Покупки недоступны в dumgram</string>
-    <string name="DumPurchasesUnavailableText">dumgram это неофициальный форк, поэтому Premium и Stars здесь купить нельзя. Покупайте в официальном приложении Telegram, здесь они тоже появятся.</string>
+    <string name="DumPurchasesUnavailable">Покупки недоступны в dumGram</string>
+    <string name="DumPurchasesUnavailableText">dumGram это неофициальный форк, поэтому Premium и Stars здесь купить нельзя. Покупайте в официальном приложении Telegram, здесь они тоже появятся.</string>
 </resources>

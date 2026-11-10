@@ -1,9 +1,9 @@
-# dumgram
+# dumGram
 
 Unofficial Telegram client for Android, based on the [official Telegram for Android source code](https://github.com/DrKLO/Telegram).
 Distributed as APK files only (no Google Play).
 
-**dumgram is not affiliated with Telegram.**
+**dumGram is not affiliated with Telegram.**
 
 - Developer: dum
 - Package: `dev.dum.dumgram`
@@ -13,8 +13,8 @@ Distributed as APK files only (no Google Play).
 
 1. Clone with submodules:
    ```bash
-   git clone https://github.com/damnurmum/dumgram.git
-   cd dumgram
+   git clone https://github.com/damnurmum/dumGram.git
+   cd dumGram
    git submodule update --init --recursive
    ```
 2. Get your own `api_id` and `api_hash` at [my.telegram.org](https://my.telegram.org) and set
@@ -26,7 +26,7 @@ Distributed as APK files only (no Google Play).
    ```bash
    ./gradlew :TMessagesProj_App:assembleAfatRelease
    ```
-   Output: `TMessagesProj_App/build/outputs/apk/afat/release/dumgram-<version>-<abi>.apk`
+   Output: `TMessagesProj_App/build/outputs/apk/afat/release/dumGram-<version>-<abi>.apk`
    for `armeabi-v7a`, `arm64-v8a`, `x86`, `x86_64` and `universal`.
 
 ## CI
