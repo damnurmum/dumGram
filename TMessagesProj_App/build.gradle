@@ -121,18 +121,12 @@ android {
 
     productFlavors {
         bundleAfat {
-            ndk {
-                abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            }
             ext {
                 abiVersionCode = 1
             }
             buildConfigField "boolean", "BUNDLE", "true"
         }
         afat {
-            ndk {
-                abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            }
             sourceSets.debug {
                 manifest.srcFile '../TMessagesProj/config/debug/AndroidManifest_SDK23.xml'
             }
@@ -149,11 +143,23 @@ android {
         }
     }
 
+    // separate apk for every abi plus a fat one. don't put ndk.abiFilters back in the flavors,
+    // AGP refuses to build when both are set
+    splits {
+        abi {
+            enable true
+            reset()
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            universalApk true
+        }
+    }
+
     defaultConfig.versionCode = Integer.parseInt(APP_VERSION_CODE)
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "app.apk"
+            def abi = output.getFilter(com.android.build.OutputFile.ABI) ?: "universal"
+            outputFileName = "dumgram-${variant.versionName}-${abi}.apk"
             output.versionCodeOverride = defaultConfig.versionCode * 10 + variant.productFlavors.get(0).abiVersionCode
         }
     }

@@ -1,0 +1,98 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write # needed to publish releases on tags
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      APK_DIR: TMessagesProj_App/build/outputs/apk/afat/release
+      PACKAGE: dev.dum.dumgram
+    steps:
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/local/share/boost /opt/hostedtoolcache/CodeQL
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Install NDK, CMake, NASM
+        run: |
+          sudo apt-get install -y nasm
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "ndk;27.2.12479018" "cmake;3.22.1" "build-tools;36.0.0" > /dev/null
+
+      # PRs from forks don't get secrets, so they fall back to gradle.properties and the
+      # stock keystore. good enough to check the build, but a release has to be signed with ours
+      - name: Apply secrets
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          APP_HASH: ${{ secrets.APP_HASH }}
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          [ -n "$APP_ID" ] && echo "ORG_GRADLE_PROJECT_APP_ID=$APP_ID" >> "$GITHUB_ENV"
+          [ -n "$APP_HASH" ] && echo "ORG_GRADLE_PROJECT_APP_HASH=$APP_HASH" >> "$GITHUB_ENV"
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > TMessagesProj/config/release.keystore
+            echo "ORG_GRADLE_PROJECT_RELEASE_STORE_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "ORG_GRADLE_PROJECT_RELEASE_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "ORG_GRADLE_PROJECT_RELEASE_KEY_PASSWORD=$KEY_PASSWORD" >> "$GITHUB_ENV"
+          elif [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            echo "::error::KEYSTORE_BASE64 secret is required for release builds"; exit 1
+          fi
+
+      - name: Build
+        run: ./gradlew :TMessagesProj_App:assembleAfatRelease
+
+      - name: Check APKs
+        run: |
+          AAPT2="$ANDROID_HOME/build-tools/36.0.0/aapt2"
+          fail() { echo "::error::$1"; exit 1; }
+          count=$(ls "$APK_DIR"/*.apk | wc -l)
+          [ "$count" -eq 5 ] || fail "expected 5 APKs, got $count"
+          for apk in "$APK_DIR"/*.apk; do
+            name=$(basename "$apk" .apk); abi=${name#dumgram-*-} # strip "dumgram-13.2.1-", arm64-v8a has its own dash
+            pkg=$("$AAPT2" dump packagename "$apk")
+            [ "$pkg" = "$PACKAGE" ] || fail "$name: package $pkg, expected $PACKAGE"
+            abis=$(unzip -Z1 "$apk" 'lib/*/*' | cut -d/ -f2 | LC_ALL=C sort -u | tr '\n' ' ')
+            if [ "$abi" = universal ]; then
+              [ "$abis" = "arm64-v8a armeabi-v7a x86 x86_64 " ] || fail "$name: has ABIs '$abis'"
+            else
+              [ "$abis" = "$abi " ] || fail "$name: has ABIs '$abis', expected only $abi"
+            fi
+            unzip -Z1 "$apk" | grep -q "^lib/.*/libtmessages" || fail "$name: native lib missing"
+            echo "ok  $name  ($pkg, $abis)"
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dumgram-apk
+          path: ${{ env.APK_DIR }}/*.apk
+
+      - name: GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" "$APK_DIR"/*.apk --generate-notes
