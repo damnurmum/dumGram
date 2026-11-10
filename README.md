@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="branding/banner-dark.svg">
-    <img alt="dumGram" src="branding/banner-light.svg" width="420">
+    <img alt="dumGram" src="branding/banner-light.svg" width="480">
   </picture>
 </p>
 
@@ -10,10 +10,10 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/damnurmum/dumGram/actions/workflows/build.yml"><img alt="Build" src="https://github.com/damnurmum/dumGram/actions/workflows/build.yml/badge.svg"></a>
-  <a href="LICENSE"><img alt="License: GPL v2" src="https://img.shields.io/badge/license-GPL%20v2-E83030"></a>
-  <img alt="Android 6.0+" src="https://img.shields.io/badge/Android-6.0%2B-3DDC84?logo=android&logoColor=white">
-  <a href="https://github.com/DrKLO/Telegram"><img alt="Based on Telegram 13.2.1" src="https://img.shields.io/badge/based%20on-Telegram%2013.2.1-26A5E4?logo=telegram&logoColor=white"></a>
+  <a href="https://github.com/damnurmum/dumGram/actions/workflows/build.yml"><img alt="Build" src="https://img.shields.io/github/actions/workflow/status/damnurmum/dumGram/build.yml?branch=main&label=build&logo=githubactions&logoColor=white&color=A62C2C&labelColor=E83030"></a>
+  <a href="LICENSE"><img alt="License: GPL v2" src="https://img.shields.io/badge/license-GPL%20v2-A62C2C?labelColor=E83030"></a>
+  <img alt="Android 6.0+" src="https://img.shields.io/badge/Android-6.0%2B-A62C2C?logo=android&logoColor=white&labelColor=E83030">
+  <a href="https://github.com/DrKLO/Telegram"><img alt="Based on Telegram 13.2.1" src="https://img.shields.io/badge/based%20on-Telegram%2013.2.1-A62C2C?logo=telegram&logoColor=white&labelColor=E83030"></a>
 </p>
 
 ---
@@ -97,7 +97,7 @@ git fetch upstream && git merge upstream/master
 
 - [Telegram for Android](https://github.com/DrKLO/Telegram), the base of all this
 - [tg-ws-proxy](https://github.com/Flowseal/tg-ws-proxy) by Flowseal and its Rust port [tg-ws-proxy-rs](https://github.com/valnesfjord/tg-ws-proxy-rs) by valnesfjord, the TG WS Proxy core
-- Wordmark set in [Roboto](https://github.com/googlefonts/roboto) (Apache 2.0)
+- Banner set in [Cal Sans](https://github.com/calcom/sans) (OFL 1.1), the in-app wordmark in [Roboto](https://github.com/googlefonts/roboto) (Apache 2.0)
 
 ## License
 
