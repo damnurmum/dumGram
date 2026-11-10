@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="AppName">dumgram</string>
-    <string name="AppNameBeta">dumgram Beta</string>
+    <string name="AppName">dumGram</string>
+    <string name="AppNameBeta">dumGram Beta</string>
     <string name="LanguageName">Українська</string>
     <string name="English">Англійська</string>
     <string name="LanguageNameInEnglish">Ukrainian</string>

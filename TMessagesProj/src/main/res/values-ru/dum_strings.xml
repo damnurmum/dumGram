@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="DumSettings">dumgram</string>
+    <string name="DumSettings">dumGram</string>
     <string name="DumSettingsInfo">Функции и настройки форка</string>
 
     <string name="DumProfileHeader">Профиль</string>
@@ -25,6 +25,16 @@
     <string name="DumBrowser">Браузер для ссылок</string>
     <string name="DumBrowserInfo">Это настройка самого Telegram. Выключите там встроенный браузер, и ссылки будут открываться в вашем браузере.</string>
 
+    <string name="DumProxyTgWs">TG WS Proxy</string>
+    <string name="DumProxyTgWsInfo">Запускает небольшой прокси прямо на телефоне и передаёт трафик Telegram через WebSocket, так же как подключается веб-версия. Не нужен ни сервер, ни VPN, работает без настройки.\n\nФото и видео могут грузиться медленнее, звонки через него могут не работать. Основано на tg-ws-proxy от Flowseal и его Rust-порте от valnesfjord (MIT).\n\nОбщие домены Cloudflare выручают, когда провайдер блокирует серверы Telegram, их держит сообщество tg-ws-proxy. Свой домен или Worker в Cloudflare надёжнее, всё под вашим контролем. Несколько доменов пишутся через запятую. Если не уверены, оставьте поля пустыми.</string>
+
+    <string name="DumProxyName">Название (необязательно)</string>
+    <string name="DumProxyTgWsRouting">Маршрут</string>
+    <string name="DumProxyTgWsCommunity">Общие домены Cloudflare</string>
+    <string name="DumProxyTgWsCfDomain">Свои домены Cloudflare</string>
+    <string name="DumProxyTgWsWorker">Домен Cloudflare Worker</string>
+    <string name="DumProxyTgWsDcIp">Адреса DC, например 2:149.154.167.220</string>
+
     <string name="DumAboutHeader">О приложении</string>
     <string name="DumVersion">Версия</string>
     <string name="DumSourceCode">Исходный код на GitHub</string>
@@ -36,6 +46,6 @@
     <string name="DumDcAmsterdam">(Амстердам)</string>
     <string name="DumDcSingapore">(Сингапур)</string>
 
-    <string name="DumPurchasesUnavailable">Покупки недоступны в dumgram</string>
-    <string name="DumPurchasesUnavailableText">dumgram это неофициальный форк, поэтому Premium и Stars здесь купить нельзя. Покупайте в официальном приложении Telegram, здесь они тоже появятся.</string>
+    <string name="DumPurchasesUnavailable">Покупки недоступны в dumGram</string>
+    <string name="DumPurchasesUnavailableText">dumGram это неофициальный форк, поэтому Premium и Stars здесь купить нельзя. Покупайте в официальном приложении Telegram, здесь они тоже появятся.</string>
 </resources>

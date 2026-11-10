@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="DumSettings">dumgram</string>
+    <string name="DumSettings">dumGram</string>
     <string name="DumSettingsInfo">Fork features and tweaks</string>
 
     <string name="DumProfileHeader">Profile</string>
@@ -25,6 +25,16 @@
     <string name="DumBrowser">Browser for links</string>
     <string name="DumBrowserInfo">Telegram\'s own setting. Turn off the in-app browser there to open links in your browser app.</string>
 
+    <string name="DumProxyTgWs">TG WS Proxy</string>
+    <string name="DumProxyTgWsInfo">Runs a small proxy right on your phone and carries Telegram traffic over WebSocket, the same way the web version connects. No server or VPN needed, works without any setup.\n\nPhotos and videos may load slower, calls may not work through it. Based on tg-ws-proxy by Flowseal and its Rust port by valnesfjord (MIT).\n\nShared Cloudflare domains help when your provider blocks Telegram\'s own servers, they are run by the tg-ws-proxy community. Your own Cloudflare domain or Worker keeps it in your hands. Several domains go comma-separated. Not sure? Leave the fields empty.</string>
+
+    <string name="DumProxyName">Name (optional)</string>
+    <string name="DumProxyTgWsRouting">Routing</string>
+    <string name="DumProxyTgWsCommunity">Shared Cloudflare domains</string>
+    <string name="DumProxyTgWsCfDomain">Your Cloudflare domains</string>
+    <string name="DumProxyTgWsWorker">Cloudflare Worker domain</string>
+    <string name="DumProxyTgWsDcIp">DC addresses, e.g. 2:149.154.167.220</string>
+
     <string name="DumAboutHeader">About</string>
     <string name="DumVersion">Version</string>
     <string name="DumSourceCode">Source code on GitHub</string>
@@ -36,6 +46,6 @@
     <string name="DumDcAmsterdam">(Amsterdam)</string>
     <string name="DumDcSingapore">(Singapore)</string>
 
-    <string name="DumPurchasesUnavailable">Purchases aren\'t available in dumgram</string>
-    <string name="DumPurchasesUnavailableText">dumgram is an unofficial fork, so Premium and Stars can\'t be bought here. Use the official Telegram app for purchases, they will show up here too.</string>
+    <string name="DumPurchasesUnavailable">Purchases aren\'t available in dumGram</string>
+    <string name="DumPurchasesUnavailableText">dumGram is an unofficial fork, so Premium and Stars can\'t be bought here. Use the official Telegram app for purchases, they will show up here too.</string>
 </resources>

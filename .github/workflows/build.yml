@@ -73,7 +73,7 @@ jobs:
           count=$(ls "$APK_DIR"/*.apk | wc -l)
           [ "$count" -eq 5 ] || fail "expected 5 APKs, got $count"
           for apk in "$APK_DIR"/*.apk; do
-            name=$(basename "$apk" .apk); abi=${name#dumgram-*-} # strip "dumgram-13.2.1-", arm64-v8a has its own dash
+            name=$(basename "$apk" .apk); abi=${name#dumGram-*-} # strip "dumGram-13.2.1-", arm64-v8a has its own dash
             pkg=$("$AAPT2" dump packagename "$apk")
             [ "$pkg" = "$PACKAGE" ] || fail "$name: package $pkg, expected $PACKAGE"
             abis=$(unzip -Z1 "$apk" 'lib/*/*' | cut -d/ -f2 | LC_ALL=C sort -u | tr '\n' ' ')
@@ -88,7 +88,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: dumgram-apk
+          name: dumGram-apk
           path: ${{ env.APK_DIR }}/*.apk
 
       - name: GitHub Release
