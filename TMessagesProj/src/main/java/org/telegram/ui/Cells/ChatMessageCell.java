@@ -15531,9 +15531,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         } else if (current.scheduled && current.messageOwner.date == 0x7FFFFFFE) {
             return "";
         } else if (current.realDate != 0) {
-            return LocaleController.formatSmallDateChat(current.realDate) + ", " + LocaleController.getInstance().getFormatterDay().format((long) (current.realDate) * 1000);
+            return LocaleController.formatSmallDateChat(current.realDate) + ", " + dumTimeFormat().format((long) (current.realDate) * 1000);
         } else if (current.isRepostPreview) {
-            return LocaleController.formatSmallDateChat(message.messageOwner.date) + ", " + LocaleController.getInstance().getFormatterDay().format((long) (message.messageOwner.date) * 1000);
+            return LocaleController.formatSmallDateChat(message.messageOwner.date) + ", " + dumTimeFormat().format((long) (message.messageOwner.date) * 1000);
         } else if (edited) {
             if (AppGlobalConfig.getInstance(current.currentAccount).messagePrimaryEditedDate.get()) {
                 if (editDate == 0 && current.isEditing()) {
@@ -15541,7 +15541,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 }
                 return LocaleController.formatPmEditedDate(editDate);
             }
-            return getString(R.string.EditedMessage) + " " + LocaleController.getInstance().getFormatterDay().format((long) (message.messageOwner.date) * 1000);
+            return getString(R.string.EditedMessage) + " " + dumTimeFormat().format((long) (message.messageOwner.date) * 1000);
         } else if (current.isSaved && current.messageOwner.fwd_from != null && (current.messageOwner.fwd_from.date != 0 || current.messageOwner.fwd_from.saved_date != 0)
                 // A widget keeps its time alone in Saved Messages: the pill over its corner stays short.
                 && !(MessageObject.getMedia(current.messageOwner) instanceof TLRPC.TL_messageMediaWidget)) {
@@ -15551,7 +15551,13 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             }
             return LocaleController.formatSeenDate(date);
         }
-        return LocaleController.getInstance().getFormatterDay().format((long) (message.messageOwner.date) * 1000);
+        return dumTimeFormat().format((long) (message.messageOwner.date) * 1000);
+    }
+
+    // dumgram setting, adds seconds to the time under messages
+    private static org.telegram.messenger.time.FastDateFormat dumTimeFormat() {
+        final LocaleController locale = LocaleController.getInstance();
+        return org.telegram.utils.settings.DumSettings.messageSeconds.get() ? locale.getFormatterDayWithSeconds() : locale.getFormatterDay();
     }
 
     void measureTime(MessageObject messageObject) {

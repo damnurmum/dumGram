@@ -1302,7 +1302,7 @@ public class PremiumPreviewFragment extends BaseFragment implements Notification
 
     public static String getPremiumButtonText(int currentAccount, SubscriptionTier tier) {
         if (BuildVars.IS_BILLING_UNAVAILABLE) {
-            return getString(R.string.SubscribeToPremiumNotAvailable);
+            return getString(R.string.DumPurchasesUnavailable);
         }
 
         int stringResId = R.string.SubscribeToPremium;

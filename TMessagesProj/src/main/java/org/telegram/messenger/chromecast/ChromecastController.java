@@ -33,12 +33,22 @@ public class ChromecastController implements SessionManagerListener<CastSession>
     private final SessionManager sessionManager;
 
     private ChromecastController() {
-        CastContext castContext = CastContext.getSharedInstance(ApplicationLoader.applicationContext);
-        castContext.addCastStateListener(i -> Log.d(CAST_STATE, "onCastStateChanged " + i));  // ???
-
         state = new ChromecastControllerState();
 
-        sessionManager = castContext.getSessionManager();
+        // dumgram ships without the cast options provider, so getSharedInstance throws.
+        // stay alive with no session manager, isCasting() is then always false
+        SessionManager manager = null;
+        try {
+            CastContext castContext = CastContext.getSharedInstance(ApplicationLoader.applicationContext);
+            castContext.addCastStateListener(i -> Log.d(CAST_STATE, "onCastStateChanged " + i));
+            manager = castContext.getSessionManager();
+        } catch (Exception e) {
+            Log.d(CAST_CONTROLLER, "cast is off: " + e.getMessage());
+        }
+        sessionManager = manager;
+        if (sessionManager == null) {
+            return;
+        }
         sessionManager.addSessionManagerListener(this, CastSession.class);
 
         tryInitClient(sessionManager.getCurrentCastSession());

@@ -34,7 +34,7 @@ Distributed as APK files only (no Google Play).
 [`.github/workflows/build.yml`](.github/workflows/build.yml) builds and checks the APKs on every push to `main` and every PR.
 Pushing a `v*` tag also creates a GitHub Release with the APKs attached.
 
-Repository secrets (Settings → Secrets and variables → Actions):
+Repository secrets (Settings > Secrets and variables > Actions):
 
 | Secret | Value |
 |---|---|

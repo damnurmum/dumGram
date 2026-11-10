@@ -26,7 +26,8 @@ class TelegramBuildAppPlugin : Plugin<Project> {
             ) {
                 stringsXml.from(
                     telegramModule.fileTree("src/main/res/values") {
-                        include("strings.xml")
+                        // dum_strings.xml holds our own strings, kept apart so upstream merges stay clean
+                        include("strings.xml", "dum_strings.xml")
                     },
                     project.fileTree("src/main/res/values") {
                         include("strings.xml")
@@ -35,7 +36,7 @@ class TelegramBuildAppPlugin : Plugin<Project> {
 
                 localizationFiles.from(
                     telegramModule.fileTree("src/main/res") {
-                        include("values-*/strings.xml")
+                        include("values-*/strings.xml", "values-*/dum_strings.xml")
                     },
                     project.fileTree("src/main/res") {
                         include("values-*/strings.xml")

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="DumSettings">dumgram</string>
+    <string name="DumSettingsInfo">Fork features and tweaks</string>
+
+    <string name="DumProfileHeader">Profile</string>
+    <string name="DumShowPeerId">Show ID and data center</string>
+    <string name="DumShowPeerIdInfo">Adds a row with the ID and data center to user, group and channel profiles. Tap it to copy the ID.</string>
+
+    <string name="DumChatsHeader">Chats</string>
+    <string name="DumMessageSeconds">Seconds in message time</string>
+    <string name="DumMessageSecondsInfo">Shows 14:05:37 instead of 14:05 under messages.</string>
+
+    <string name="DumAboutHeader">About</string>
+    <string name="DumVersion">Version</string>
+    <string name="DumSourceCode">Source code on GitHub</string>
+
+    <string name="DumPeerId">ID</string>
+    <string name="DumPeerIdDc">ID, DC %1$d %2$s</string>
+    <string name="DumIdCopied">ID copied to clipboard</string>
+    <string name="DumDcMiami">(Miami)</string>
+    <string name="DumDcAmsterdam">(Amsterdam)</string>
+    <string name="DumDcSingapore">(Singapore)</string>
+
+    <string name="DumPurchasesUnavailable">Purchases aren\'t available in dumgram</string>
+    <string name="DumPurchasesUnavailableText">dumgram is an unofficial fork, so Premium and Stars can\'t be bought here. Use the official Telegram app for purchases, they will show up here too.</string>
+</resources>
