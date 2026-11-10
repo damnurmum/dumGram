@@ -530,7 +530,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         titleView.setText(UserObject.getUserName(user));
         final StringBuilder sb = new StringBuilder();
         if (user != null) {
-            sb.append(PhoneFormat.getInstance().format("+" + user.phone));
+            sb.append(org.telegram.utils.settings.DumSettings.hidePhone.get() ? getString(R.string.DumPhoneHidden) : PhoneFormat.getInstance().format("+" + user.phone));
         }
         final String username = UserObject.getPublicUsername(user);
         if (username != null) {
@@ -612,6 +612,7 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
         if (listView.adapter != null) {
             listView.adapter.update(false);
         }
+        setInfo(); // picks up dumgram's hide phone toggle right away
     }
 
     private void setActionBarVisibilityFactor(float factor) {

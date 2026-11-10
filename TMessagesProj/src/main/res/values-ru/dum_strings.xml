@@ -11,6 +11,20 @@
     <string name="DumMessageSeconds">Секунды во времени сообщений</string>
     <string name="DumMessageSecondsInfo">Под сообщениями будет 14:05:37 вместо 14:05.</string>
 
+    <string name="DumPrivacyHeader">Приватность</string>
+    <string name="DumHidePhone">Скрыть мой номер</string>
+    <string name="DumHidePhoneInfo">Номер не будет виден в настройках, на экране аккаунта и в вашем профиле. Удобно, когда показываете экран.</string>
+    <string name="DumPhoneHidden">Номер скрыт</string>
+
+    <string name="DumTabsHeader">Нижние вкладки</string>
+    <string name="DumTabSettingsOrCalls">Настройки или Звонки</string>
+    <string name="DumTabsInfo">Чаты остаются всегда. Если скрыть вкладку настроек, их можно открыть через меню с тремя точками на экране чатов. Вкладки меняются после перезапуска.</string>
+    <string name="DumRestart">Перезапустить</string>
+
+    <string name="DumLinksHeader">Ссылки</string>
+    <string name="DumBrowser">Браузер для ссылок</string>
+    <string name="DumBrowserInfo">Это настройка самого Telegram. Выключите там встроенный браузер, и ссылки будут открываться в вашем браузере.</string>
+
     <string name="DumAboutHeader">О приложении</string>
     <string name="DumVersion">Версия</string>
     <string name="DumSourceCode">Исходный код на GitHub</string>

@@ -107,8 +107,31 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
     private static final int INDEX_CALLS = 3;
     private static final int INDEX_PROFILE = 4;
 
-    private static int indexToPosition(int index) {
-        return index > 2 ? index - 1 : index;
+    // dumgram: tabs can be hidden, so the pager only holds the visible pages.
+    // pages[pagerPosition] = POSITION_* constant. chats can't be hidden and always stays first.
+    // the list is read once, so toggling tabs needs an app restart
+    private final int[] pages = buildPages();
+
+    private static int[] buildPages() {
+        final int[] pages = new int[TABS_COUNT];
+        int count = 0;
+        pages[count++] = POSITION_CHATS;
+        if (!org.telegram.utils.settings.DumSettings.hideContactsTab.get()) pages[count++] = POSITION_CONTACTS;
+        if (!org.telegram.utils.settings.DumSettings.hideSettingsTab.get()) pages[count++] = POSITION_CALLS_OR_SETTINGS;
+        if (!org.telegram.utils.settings.DumSettings.hideProfileTab.get()) pages[count++] = POSITION_PROFILE;
+        return java.util.Arrays.copyOf(pages, count);
+    }
+
+    // POSITION_* -> pager position, -1 if that tab is hidden
+    private int pagerPos(int page) {
+        for (int i = 0; i < pages.length; i++) {
+            if (pages[i] == page) return i;
+        }
+        return -1;
+    }
+
+    private int indexToPosition(int index) {
+        return pagerPos(index > 2 ? index - 1 : index);
     }
 
     private static final int ANIMATOR_ID_TABS_VISIBLE = 0;
@@ -364,7 +387,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
             });
 
             tabsView.addView(tabs[index]);
-            tabsView.setViewVisible(view, true, false);
+            tabsView.setViewVisible(view, position >= 0, false);
         }
         checkUi_callTabVisible(getUserConfig().showCallsTab, false);
 
@@ -751,12 +774,12 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
         if (viewPager != null) {
             final int currentPosition = viewPager.getCurrentPosition();
-            if (currentPosition != POSITION_CALLS_OR_SETTINGS && dropCallsFragmentAfterPageScroll) {
-                dropFragmentAtPosition(POSITION_CALLS_OR_SETTINGS);
+            if (currentPosition != pagerPos(POSITION_CALLS_OR_SETTINGS) && dropCallsFragmentAfterPageScroll) {
+                dropFragmentAtPosition(pagerPos(POSITION_CALLS_OR_SETTINGS));
                 dropCallsFragmentAfterPageScroll = false;
             }
-            if (currentPosition != POSITION_PROFILE) {
-                dropFragmentAtPosition(POSITION_PROFILE);
+            if (currentPosition != pagerPos(POSITION_PROFILE)) {
+                dropFragmentAtPosition(pagerPos(POSITION_PROFILE));
             }
             if (pendingFolderId != null && currentPosition == POSITION_CHATS && dialogsActivity != null) {
                 dialogsActivity.scrollToFolder(pendingFolderId);
@@ -786,7 +809,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
     @Override
     protected int getFragmentsCount() {
-        return TABS_COUNT;
+        return pages.length;
     }
 
     @Override
@@ -825,6 +848,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
     @Override
     protected BaseFragment createBaseFragmentAt(int position) {
+        position = pages[position];
         if (position == POSITION_CONTACTS) {
             Bundle args = new Bundle();
             args.putBoolean("needPhonebook", true);
@@ -1016,12 +1040,12 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         } else if (id == NotificationCenter.callTabsVisibleToggled) {
             final boolean callTabsVisible = getUserConfig().showCallsTab;
             checkUi_callTabVisible(callTabsVisible, true);
-            if (viewPager != null && viewPager.getCurrentPosition() == POSITION_CALLS_OR_SETTINGS) {
+            if (viewPager != null && viewPager.getCurrentPosition() == pagerPos(POSITION_CALLS_OR_SETTINGS)) {
                 viewPager.scrollToPosition(POSITION_CHATS);
                 selectTab(POSITION_CHATS, true);
                 dropCallsFragmentAfterPageScroll = true;
             } else {
-                dropFragmentAtPosition(POSITION_CALLS_OR_SETTINGS);
+                dropFragmentAtPosition(pagerPos(POSITION_CALLS_OR_SETTINGS));
             }
         } else if (id == NotificationCenter.mainUserInfoChanged) {
             if (tabs != null && tabs[INDEX_PROFILE] != null) {
@@ -1080,7 +1104,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
         }
 
         final float animatedPosition = viewPager.getPositionAnimated();
-        final float isProfile = 1f - MathUtils.clamp(Math.abs(POSITION_PROFILE - animatedPosition), 0, 1);
+        final float isProfile = 1f - MathUtils.clamp(Math.abs(pagerPos(POSITION_PROFILE) - animatedPosition), 0, 1);
         final float hide = 1f - AndroidUtilities.getNavigationBarThirdButtonsFactor(0, 1f, navigationBarHeight);
         float alpha = (1f - isProfile * hide) * animatorTabsVisible.getFloatValue();
         if (tabletLayout) {
@@ -1110,8 +1134,9 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
 
     private void checkUi_callTabVisible(boolean callTabsVisible, boolean animated) {
         if (tabsView != null) {
-            tabsView.setViewVisible(tabs[INDEX_SETTINGS], !callTabsVisible, animated);
-            tabsView.setViewVisible(tabs[INDEX_CALLS], callTabsVisible, animated);
+            final boolean slotShown = pagerPos(POSITION_CALLS_OR_SETTINGS) >= 0;
+            tabsView.setViewVisible(tabs[INDEX_SETTINGS], slotShown && !callTabsVisible, animated);
+            tabsView.setViewVisible(tabs[INDEX_CALLS], slotShown && callTabsVisible, animated);
         }
     }
 
@@ -1178,7 +1203,7 @@ public class MainTabsActivity extends ViewPagerActivity implements NotificationC
     private boolean accountSwitchHintShown;
 
     private void showAccountChangeHint() {
-        if (accountSwitchHintShown) return;
+        if (accountSwitchHintShown || pagerPos(POSITION_PROFILE) < 0) return;
 
         if (accountSwitchHint == null && HintsController.Hint.AccountSwitchHint.show()) {
             AndroidUtilities.runOnUIThread(() -> {
