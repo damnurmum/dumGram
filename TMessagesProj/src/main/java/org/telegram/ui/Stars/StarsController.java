@@ -795,7 +795,7 @@ public class StarsController {
             return;
         }
 
-        if (!MessagesController.getInstance(currentAccount).starsPurchaseAvailable()) {
+        if (BuildVars.IS_BILLING_UNAVAILABLE || !MessagesController.getInstance(currentAccount).starsPurchaseAvailable()) {
             BaseFragment lastFragment = LaunchActivity.getLastFragment();
             if (lastFragment != null && lastFragment.getContext() != null) {
                 showNoSupportDialog(lastFragment.getContext(), lastFragment.getResourceProvider());
@@ -932,7 +932,7 @@ public class StarsController {
             return;
         }
 
-        if (!MessagesController.getInstance(currentAccount).starsPurchaseAvailable()) {
+        if (BuildVars.IS_BILLING_UNAVAILABLE || !MessagesController.getInstance(currentAccount).starsPurchaseAvailable()) {
             BaseFragment lastFragment = LaunchActivity.getLastFragment();
             if (lastFragment != null && lastFragment.getContext() != null) {
                 showNoSupportDialog(lastFragment.getContext(), lastFragment.getResourceProvider());
@@ -1081,7 +1081,7 @@ public class StarsController {
             return;
         }
 
-        if (!MessagesController.getInstance(currentAccount).starsPurchaseAvailable()) {
+        if (BuildVars.IS_BILLING_UNAVAILABLE || !MessagesController.getInstance(currentAccount).starsPurchaseAvailable()) {
             BaseFragment lastFragment = LaunchActivity.getLastFragment();
             if (lastFragment != null && lastFragment.getContext() != null) {
                 showNoSupportDialog(lastFragment.getContext(), lastFragment.getResourceProvider());
@@ -1466,8 +1466,8 @@ public class StarsController {
 
     public static void showNoSupportDialog(Context context, Theme.ResourcesProvider resourcesProvider) {
         new AlertDialog.Builder(context, resourcesProvider)
-            .setTitle(getString(R.string.StarsNotAvailableTitle))
-            .setMessage(getString(R.string.StarsNotAvailableText))
+            .setTitle(getString(BuildVars.IS_BILLING_UNAVAILABLE ? R.string.DumPurchasesUnavailable : R.string.StarsNotAvailableTitle))
+            .setMessage(getString(BuildVars.IS_BILLING_UNAVAILABLE ? R.string.DumPurchasesUnavailableText : R.string.StarsNotAvailableText))
             .setPositiveButton(getString(R.string.OK), null)
             .show();
     }
