@@ -13425,7 +13425,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 }
             }
         }
-        if (getUserConfig().showCallsTab) {
+        // dumgram: with the settings tab hidden this menu is the way back to settings
+        if (getUserConfig().showCallsTab || org.telegram.utils.settings.DumSettings.hideSettingsTab.get()) {
             io.add(R.drawable.msg_settings_old, getString(R.string.Settings), () -> {
                 presentFragment(new SettingsActivity());
             });

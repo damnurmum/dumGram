@@ -11,6 +11,20 @@
     <string name="DumMessageSeconds">Seconds in message time</string>
     <string name="DumMessageSecondsInfo">Shows 14:05:37 instead of 14:05 under messages.</string>
 
+    <string name="DumPrivacyHeader">Privacy</string>
+    <string name="DumHidePhone">Hide my phone number</string>
+    <string name="DumHidePhoneInfo">Your number won\'t show in Settings, on the account screen and in your profile. Handy when you share your screen.</string>
+    <string name="DumPhoneHidden">Number hidden</string>
+
+    <string name="DumTabsHeader">Bottom tabs</string>
+    <string name="DumTabSettingsOrCalls">Settings or Calls</string>
+    <string name="DumTabsInfo">Chats always stay. With the settings tab hidden, open Settings from the three-dot menu on the chats screen. Tabs change after a restart.</string>
+    <string name="DumRestart">Restart to apply</string>
+
+    <string name="DumLinksHeader">Links</string>
+    <string name="DumBrowser">Browser for links</string>
+    <string name="DumBrowserInfo">Telegram\'s own setting. Turn off the in-app browser there to open links in your browser app.</string>
+
     <string name="DumAboutHeader">About</string>
     <string name="DumVersion">Version</string>
     <string name="DumSourceCode">Source code on GitHub</string>
