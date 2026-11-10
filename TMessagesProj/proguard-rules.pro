@@ -79,3 +79,5 @@
 # Use -keep to explicitly keep any other classes shrinking would remove
 #-dontoptimize
 #-dontobfuscate
+# dumgram: tg-ws-proxy-rs calls these back by name over JNI
+-keep class io.github.valnesfjord.tgwsproxyrs.NativeProxy { *; }

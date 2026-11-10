@@ -49,6 +49,7 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.ProxyRotationController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
+import org.telegram.utils.proxy.DumProxyNames;
 import org.telegram.utils.proxy.ProxySettings;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.ui.ActionBar.ActionBar;
@@ -193,9 +194,16 @@ public class ProxyListActivity extends BaseFragment implements NotificationCente
         }
 
         public void setProxy(SharedConfig.ProxyInfo proxyInfo) {
-            textView.setText(proxyInfo.settings.getType() == ProxySettings.Type.WEB
-                    ? proxyInfo.settings.getAddress() + " (WEB)"
-                    : proxyInfo.settings.getAddress() + ":" + proxyInfo.settings.getPort());
+            final String name = DumProxyNames.get(proxyInfo.settings);
+            if (!name.isEmpty()) {
+                textView.setText(name);
+            } else if (proxyInfo.settings.getType() == ProxySettings.Type.TG_WS) {
+                textView.setText(LocaleController.getString(R.string.DumProxyTgWs));
+            } else {
+                textView.setText(proxyInfo.settings.getType() == ProxySettings.Type.WEB
+                        ? proxyInfo.settings.getAddress() + " (WEB)"
+                        : proxyInfo.settings.getAddress() + ":" + proxyInfo.settings.getPort());
+            }
             currentInfo = proxyInfo;
         }
 
@@ -576,10 +584,14 @@ public class ProxyListActivity extends BaseFragment implements NotificationCente
                     case MENU_SHARE:
                         StringBuilder links = new StringBuilder();
                         for (SharedConfig.ProxyInfo info : selectedItems) {
+                            final String link = info.settings.getLink();
+                            if (link.isEmpty()) {
+                                continue; // TG WS proxies are local to this phone
+                            }
                             if (links.length() > 0) {
                                 links.append("\n\n");
                             }
-                            links.append(info.settings.getLink());
+                            links.append(link);
                         }
 
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);

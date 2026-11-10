@@ -57,6 +57,8 @@ import org.telegram.messenger.SvgHelper;
 import org.telegram.messenger.Utilities;
 import org.telegram.utils.proxy.WebProxyTransport;
 import org.telegram.utils.proxy.ProxySettings;
+import org.telegram.utils.proxy.TgWsProxy;
+import org.telegram.utils.proxy.DumProxyNames;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.SimpleActionBarDoneButton;
@@ -100,7 +102,8 @@ public class ProxySettingsActivity extends BaseFragment {
     private TextSettingsCell shareCell;
     private TextSettingsCell pasteCell;
     private SimpleActionBarDoneButton doneItem;
-    private RadioCell[] typeCell = new RadioCell[3];
+    private RadioCell[] typeCell = new RadioCell[4];
+    private DumProxyForm dumForm;
     private ProxySettings.Type currentType;
 
     private ProxySettings pasteProxySettings;
@@ -222,14 +225,33 @@ public class ProxySettingsActivity extends BaseFragment {
                         return;
                     }
 
-                    currentProxyInfo.settings = ProxySettings.builder()
-                        .setType(currentType)
-                        .setAddress(inputFields[FIELD_IP].getText().toString())
-                        .setPort(currentType == ProxySettings.Type.WEB ? 0 : Utilities.parseInt(inputFields[FIELD_PORT].getText().toString()))
-                        .setUser(currentType == ProxySettings.Type.SOCKS5 ? inputFields[FIELD_USER].getText().toString() : "")
-                        .setPassword(currentType == ProxySettings.Type.SOCKS5 ? inputFields[FIELD_PASSWORD].getText().toString() : "")
-                        .setSecret(currentType != ProxySettings.Type.SOCKS5 ? inputFields[FIELD_SECRET].getText().toString() : "")
-                        .build();
+                    final ProxySettings oldSettings = addingNewProxy ? null : currentProxyInfo.settings;
+                    if (currentType == ProxySettings.Type.TG_WS) {
+                        // the secret is ours to pick and an edited entry keeps it, port and routing come from the form
+                        final ProxySettings base = currentProxyInfo.settings.getType() == ProxySettings.Type.TG_WS
+                                ? currentProxyInfo.settings : TgWsProxy.create();
+                        int port = Utilities.parseInt(inputFields[FIELD_PORT].getText().toString());
+                        if (port < 1024 || port > 65535) {
+                            port = base.getPort();
+                        }
+                        currentProxyInfo.settings = ProxySettings.builder()
+                            .setType(ProxySettings.Type.TG_WS)
+                            .setAddress(TgWsProxy.HOST)
+                            .setPort(port)
+                            .setSecret(base.getSecret())
+                            .setUser(dumForm.readOptions().toString())
+                            .build();
+                    } else {
+                        currentProxyInfo.settings = ProxySettings.builder()
+                            .setType(currentType)
+                            .setAddress(inputFields[FIELD_IP].getText().toString())
+                            .setPort(currentType == ProxySettings.Type.WEB ? 0 : Utilities.parseInt(inputFields[FIELD_PORT].getText().toString()))
+                            .setUser(currentType == ProxySettings.Type.SOCKS5 ? inputFields[FIELD_USER].getText().toString() : "")
+                            .setPassword(currentType == ProxySettings.Type.SOCKS5 ? inputFields[FIELD_PASSWORD].getText().toString() : "")
+                            .setSecret(currentType != ProxySettings.Type.SOCKS5 ? inputFields[FIELD_SECRET].getText().toString() : "")
+                            .build();
+                    }
+                    DumProxyNames.set(oldSettings, currentProxyInfo.settings, dumForm.readName());
 
                     SharedPreferences preferences = MessagesController.getGlobalMainSettings();
                     SharedPreferences.Editor editor = preferences.edit();
@@ -288,7 +310,7 @@ public class ProxySettingsActivity extends BaseFragment {
 
         final View.OnClickListener typeCellClickListener = view -> setProxyType(ProxySettings.intToType((Integer) view.getTag()), true);
 
-        for (int a = 0; a < 3; a++) {
+        for (int a = 0; a < 4; a++) {
             ProxySettings.Type t = ProxySettings.intToType(a);
 
             typeCell[a] = new RadioCell(context);
@@ -298,8 +320,10 @@ public class ProxySettingsActivity extends BaseFragment {
                 typeCell[a].setText(LocaleController.getString(R.string.UseProxySocks5), t == currentType, true);
             } else if (a == 1) {
                 typeCell[a].setText(LocaleController.getString(R.string.UseProxyTelegram), t == currentType, true);
+            } else if (a == 2) {
+                typeCell[a].setText(LocaleController.getString(R.string.UseProxyWeb), t == currentType, true);
             } else {
-                typeCell[a].setText(LocaleController.getString(R.string.UseProxyWeb), t == currentType, false);
+                typeCell[a].setText(LocaleController.getString(R.string.DumProxyTgWs), t == currentType, false);
             }
             linearLayout2.addView(typeCell[a], LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 50));
             typeCell[a].setOnClickListener(typeCellClickListener);
@@ -470,6 +494,15 @@ public class ProxySettingsActivity extends BaseFragment {
                 }
                 return false;
             });
+        }
+
+        // dumgram: proxy name on top of the fields, TG WS routing options right under them
+        dumForm = new DumProxyForm(context);
+        inputFieldsContainer.addView(dumForm.nameRow, 0, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, 64));
+        linearLayout2.addView(dumForm.tgWsBlock, linearLayout2.indexOfChild(inputFieldsContainer) + 1, LayoutHelper.createLinear(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT));
+        dumForm.load(currentProxyInfo.settings);
+        if (currentProxyInfo.settings.getType() == ProxySettings.Type.TG_WS) {
+            inputFields[FIELD_USER].setText(""); // that's TG WS options, not a login
         }
 
         for (int i = 0; i < 2; i++) {
@@ -720,11 +753,11 @@ public class ProxySettingsActivity extends BaseFragment {
         if (shareCell == null || doneItem == null || inputFields[FIELD_IP] == null || inputFields[FIELD_PORT] == null) {
             return;
         }
-        boolean enabled = currentType == ProxySettings.Type.WEB
+        boolean enabled = currentType == ProxySettings.Type.TG_WS || (currentType == ProxySettings.Type.WEB
                 ? !TextUtils.isEmpty(WebProxyTransport.normalizeHost(inputFields[FIELD_IP].getText().toString()))
                     && WebProxyTransport.isValidSecret(inputFields[FIELD_SECRET].getText().toString())
                 : inputFields[FIELD_IP].length() != 0
-                    && Utilities.parseInt(inputFields[FIELD_PORT].getText().toString()) != 0;
+                    && Utilities.parseInt(inputFields[FIELD_PORT].getText().toString()) != 0);
         setShareDoneEnabled(enabled, animated);
     }
 
@@ -773,6 +806,10 @@ public class ProxySettingsActivity extends BaseFragment {
 
                 TransitionManager.beginDelayedTransition(linearLayout2, transitionSet);
             }
+            // TG WS has nothing to type in, everything else needs the server field back
+            ((View) inputFields[FIELD_IP].getParent()).setVisibility(currentType == ProxySettings.Type.TG_WS ? View.GONE : View.VISIBLE);
+            shareCell.setVisibility(currentType == ProxySettings.Type.TG_WS ? View.GONE : View.VISIBLE);
+            dumForm.tgWsBlock.setVisibility(currentType == ProxySettings.Type.TG_WS ? View.VISIBLE : View.GONE);
             if (currentType == ProxySettings.Type.SOCKS5) {
                 bottomCells[0].setVisibility(View.VISIBLE);
                 bottomCells[1].setVisibility(View.GONE);
@@ -797,17 +834,29 @@ public class ProxySettingsActivity extends BaseFragment {
                 ((View) inputFields[FIELD_USER].getParent()).setVisibility(View.GONE);
                 ((View) inputFields[FIELD_PORT].getParent()).setVisibility(View.GONE);
                 inputFields[FIELD_PORT].setText("443");
+            } else if (currentType == ProxySettings.Type.TG_WS) {
+                bottomCells[0].setVisibility(View.GONE);
+                bottomCells[1].setVisibility(View.VISIBLE);
+                bottomCells[1].setText(LocaleController.getString(R.string.DumProxyTgWsInfo));
+                ((View) inputFields[FIELD_SECRET].getParent()).setVisibility(View.GONE);
+                ((View) inputFields[FIELD_PASSWORD].getParent()).setVisibility(View.GONE);
+                ((View) inputFields[FIELD_USER].getParent()).setVisibility(View.GONE);
+                ((View) inputFields[FIELD_PORT].getParent()).setVisibility(View.VISIBLE);
+                if (currentProxyInfo.settings.getType() != ProxySettings.Type.TG_WS) {
+                    inputFields[FIELD_PORT].setText(Integer.toString(TgWsProxy.freePort()));
+                }
             }
             typeCell[0].setChecked(currentType == ProxySettings.Type.SOCKS5, animated);
             typeCell[1].setChecked(currentType == ProxySettings.Type.MTPROTO, animated);
             typeCell[2].setChecked(currentType == ProxySettings.Type.WEB, animated);
+            typeCell[3].setChecked(currentType == ProxySettings.Type.TG_WS, animated);
             checkShareDone(animated);
         }
     }
 
     @Override
     public void onTransitionAnimationEnd(boolean isOpen, boolean backward) {
-        if (isOpen && !backward && addingNewProxy) {
+        if (isOpen && !backward && addingNewProxy && currentType != ProxySettings.Type.TG_WS) {
             inputFields[FIELD_IP].requestFocus();
             AndroidUtilities.showKeyboard(inputFields[FIELD_IP]);
         }

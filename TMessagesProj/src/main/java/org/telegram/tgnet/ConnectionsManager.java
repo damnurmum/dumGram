@@ -49,6 +49,7 @@ import org.telegram.messenger.Utilities;
 import org.telegram.utils.proxy.WebProxyConnectionTester;
 import org.telegram.utils.proxy.WebProxyTransport;
 import org.telegram.utils.proxy.ProxySettings;
+import org.telegram.utils.proxy.TgWsProxy;
 import org.telegram.ui.Components.VideoPlayer;
 import org.telegram.ui.LoginActivity;
 
@@ -673,13 +674,14 @@ public class ConnectionsManager extends BaseController {
         final SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
         final ProxySettings proxySettings = ProxySettings.fromSharedPreferences(preferences);
         if (preferences.getBoolean("proxy_enabled", false) && proxySettings.isValid()) {
+            TgWsProxy.apply(proxySettings);
             if (proxySettings.getType() == ProxySettings.Type.WEB) {
                 int localPort = WebProxyTransport.start(proxySettings.getAddress(), proxySettings.getSecret());
                 native_setProxySettings(currentAccount, "127.0.0.1", localPort != 0 ? localPort : 9, "", "",
                         proxySettings.getSecret());
             } else {
                 native_setProxySettings(currentAccount, proxySettings.getAddress(), proxySettings.getPort(),
-                        proxySettings.getUser(), proxySettings.getPassword(), proxySettings.getSecret());
+                        tgnetUser(proxySettings), proxySettings.getPassword(), proxySettings.getSecret());
             }
         }
         String installer = "";
@@ -773,6 +775,11 @@ public class ConnectionsManager extends BaseController {
         return lastPauseTime;
     }
 
+    // TG WS keeps its core options in the user field, tgnet must never see them as a login
+    private static String tgnetUser(ProxySettings settings) {
+        return settings.getType() == ProxySettings.Type.TG_WS ? "" : settings.getUser();
+    }
+
     public long checkProxy(ProxySettings settings, RequestTimeDelegate requestTimeDelegate) {
         if (settings == null || !settings.isValid()) {
             return 0;
@@ -781,8 +788,15 @@ public class ConnectionsManager extends BaseController {
             WebProxyConnectionTester.getInstance().checkProxy(settings, requestTimeDelegate, this::checkWebProxyInternal);
             return 0;
         }
+        // the ping needs the local core up even when this proxy isn't the active one.
+        // a core started just now isn't listening yet, so give it a moment instead of reporting it dead
+        if (settings.getType() == ProxySettings.Type.TG_WS && TgWsProxy.startIfIdle(settings)) {
+            AndroidUtilities.runOnUIThread(() -> native_checkProxy(currentAccount, settings.getAddress(), settings.getPort(),
+                    tgnetUser(settings), settings.getPassword(), settings.getSecret(), requestTimeDelegate), 1500);
+            return 0;
+        }
 
-        return native_checkProxy(currentAccount, settings.getAddress(), settings.getPort(), settings.getUser(), settings.getPassword(), settings.getSecret(), requestTimeDelegate);
+        return native_checkProxy(currentAccount, settings.getAddress(), settings.getPort(), tgnetUser(settings), settings.getPassword(), settings.getSecret(), requestTimeDelegate);
     }
 
     private void checkWebProxyInternal(ProxySettings settings, int port, RequestTimeDelegate requestTimeDelegate) {
@@ -989,10 +1003,11 @@ public class ConnectionsManager extends BaseController {
         String password = "";
         String secret = "";
 
+        TgWsProxy.apply(enabled ? settings : null);
         if (enabled && settings != null && settings.isValid()) {
             address = settings.getAddress();
             port = settings.getPort();
-            username = settings.getUser();
+            username = tgnetUser(settings);
             password = settings.getPassword();
             secret = settings.getSecret();
 

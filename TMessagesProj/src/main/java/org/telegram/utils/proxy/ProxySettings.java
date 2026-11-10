@@ -27,7 +27,8 @@ public final class ProxySettings {
     public enum Type {
         SOCKS5,
         MTPROTO,
-        WEB
+        WEB,
+        TG_WS // dumgram: local tg-ws-proxy-rs core, see TgWsProxy
     }
 
     private final @NonNull Type type;
@@ -45,6 +46,11 @@ public final class ProxySettings {
             secret = builder.secret;
             port = 0;
             user = "";
+            password = "";
+        } else if (type == Type.TG_WS) {
+            secret = builder.secret;
+            port = builder.port;
+            user = builder.user; // TG WS has no login, the field carries its core options instead (TgWsProxy.Options)
             password = "";
         } else if (type == Type.MTPROTO) {
             secret = builder.secret;
@@ -100,6 +106,9 @@ public final class ProxySettings {
     }
 
     public String getLink() {
+        if (type == Type.TG_WS) {
+            return ""; // lives on 127.0.0.1 of this phone, nothing to share
+        }
         StringBuilder url;
         switch (type) {
             case MTPROTO:
@@ -205,6 +214,12 @@ public final class ProxySettings {
                 editor.putInt("proxy_port", port);
                 editor.remove("proxy_pass");
                 editor.remove("proxy_user");
+                break;
+            case TG_WS:
+                editor.putString("proxy_secret", secret);
+                editor.putInt("proxy_port", port);
+                editor.putString("proxy_user", user); // core options, see the constructor
+                editor.remove("proxy_pass");
                 break;
             case WEB:
                 editor.putString("proxy_secret", secret);
@@ -523,6 +538,8 @@ public final class ProxySettings {
                 return 1;
             case WEB:
                 return 2;
+            case TG_WS:
+                return 3;
         }
         return 0;
     }
@@ -535,6 +552,8 @@ public final class ProxySettings {
                 return Type.MTPROTO;
             case 2:
                 return Type.WEB;
+            case 3:
+                return Type.TG_WS;
         }
         return Type.SOCKS5;
     }
