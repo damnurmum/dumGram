@@ -2499,6 +2499,10 @@ public class AndroidUtilities {
     }
 
     public static Typeface getTypeface(String assetPath) {
+        final Typeface dum = DumFonts.instead(assetPath);
+        if (dum != null) {
+            return dum;
+        }
         synchronized (typefaceCache) {
             if (!typefaceCache.containsKey(assetPath)) {
                 try {

@@ -9,6 +9,9 @@ public final class DumSettings {
     public static final BooleanSetting messageSeconds =
         BooleanSetting.of("dum_message_seconds", false);
 
+    public static final BooleanSetting appFont =
+        BooleanSetting.of("dum_app_font", true);
+
     public static final BooleanSetting hidePhone =
         BooleanSetting.of("dum_hide_phone", false);
 

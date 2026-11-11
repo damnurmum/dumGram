@@ -77,6 +77,7 @@ import androidx.core.math.MathUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.DumFonts;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.Bitmaps;
 import org.telegram.messenger.BuildVars;
@@ -7825,6 +7826,7 @@ public class Theme {
         if (dividerPaint == null) {
             return;
         }
+        DumFonts.fixThemePaints();
         dividerPaint.setColor(getColor(key_divider));
         linkSelectionPaint.setColor(getColor(key_windowBackgroundWhiteLinkSelection));
 
@@ -8010,6 +8012,7 @@ public class Theme {
         if (dialogs_namePaint == null) {
             return;
         }
+        DumFonts.fixThemePaints();
         for (int a = 0; a < 2; a++) {
             dialogs_namePaint[a].setColor(getColor(key_chats_name));
             dialogs_nameEncryptedPaint[a].setColor(getColor(key_chats_secretName));
@@ -8526,6 +8529,7 @@ public class Theme {
         if (chat_msgTextPaint == null) {
             return;
         }
+        DumFonts.fixThemePaints();
 
         if (chat_msgInDrawable != null && !fontsOnly) {
             chat_gamePaint.setColor(getColor(key_chat_previewGameText));
@@ -9017,6 +9021,7 @@ public class Theme {
         if (profile_verifiedDrawable == null) {
             return;
         }
+        DumFonts.fixThemePaints();
 
         profile_aboutTextPaint.setColor(getColor(key_windowBackgroundWhiteBlackText));
         profile_aboutTextPaint.linkColor = getColor(key_windowBackgroundWhiteLinkText);

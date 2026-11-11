@@ -54,6 +54,7 @@ public class AnimatedTextView extends View {
     public static class AnimatedTextDrawable extends Drawable {
 
         private final TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        { textPaint.setTypeface(Typeface.DEFAULT); } // dumgram swaps DEFAULT for its font, a bare paint would ignore that
         private int gravity = 0;
 
         private boolean isRTL = false;
