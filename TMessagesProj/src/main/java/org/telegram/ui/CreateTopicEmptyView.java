@@ -39,7 +39,7 @@ public class CreateTopicEmptyView extends LinearLayout {
 
         backupImageView = new BackupImageView(context);
 
-        final int textColorKey = Theme.isCompactMode(resourcesProvider) ? Theme.key_chat_compact_topicEmptyText : Theme.key_chat_serviceText;
+        final int textColorKey = Theme.key_chat_serviceText;
 
         TextView headerTextView = new TextView(context);
         headerTextView.setTypeface(AndroidUtilities.bold());

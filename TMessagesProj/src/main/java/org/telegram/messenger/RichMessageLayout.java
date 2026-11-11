@@ -207,9 +207,6 @@ public class RichMessageLayout {
 
     public boolean isRtl() { return richMessage != null && richMessage.rtl; }
     public boolean isOut() { return messageObject != null && messageObject.isOutOwner(); }
-    /** Compact mode draws incoming messages without a bubble: media lines up with the text and is fully rounded. */
-    public boolean isCompactIn() { return messageObject != null && messageObject.isCompactMode() && !messageObject.isOutOwner(); }
-    public static final int COMPACT_MEDIA_RADIUS = 12;
     public boolean forceTranslationLoading;
     public boolean isTranslating() { return forceTranslationLoading || (messageObject != null && MessagesController.getInstance(currentAccount).getTranslateController().isTranslating(messageObject)); }
 
@@ -1873,8 +1870,8 @@ public class RichMessageLayout {
     public boolean onTouchEvent(MotionEvent event) {
         final int act = event.getActionMasked();
 
-        // A widget spans the bubble, its text paddings included; compact mode's paddings are the page's edges.
-        final float minX = startsWithMedia() && blocks.get(0) instanceof RichWidgetBlock ? -padLeft : isCompactIn() ? 0 : padLeft;
+        // A widget spans the bubble, its text paddings included.
+        final float minX = startsWithMedia() && blocks.get(0) instanceof RichWidgetBlock ? -padLeft : padLeft;
         if (act == MotionEvent.ACTION_DOWN && (event.getX() < minX || event.getX() > getMinWidth() + padRight)) {
             return false;
         }
@@ -4333,10 +4330,7 @@ public class RichMessageLayout {
             }
 
             final int titleWidth = title != null ? title.getMinWidth() : 0;
-            // In compact (bubble-less) mode tables always span the full available width; the columns stretch to fill it.
-            intrinsicTableWidth = root.isCompactIn()
-                ? Math.max(0, viewportWidth)
-                : Math.max(0, Math.min(viewportWidth, Math.max(intrinsicContentWidth, titleWidth)));
+            intrinsicTableWidth = Math.max(0, Math.min(viewportWidth, Math.max(intrinsicContentWidth, titleWidth)));
             resolvedTableWidth = intrinsicTableWidth;
 
             for (int i = 0; i < tableLayout.getChildCount(); ++i) {
@@ -6874,8 +6868,8 @@ public class RichMessageLayout {
             final int width = root.getMinWidth() - padding.left - padding.right;
             final boolean inQuote = isInQuote();
             final int pad = dp(2);
-            final int bleedL = inQuote || root.isCompactIn() ? 0 : root.padLeft - pad;
-            final int bleedR = inQuote || root.isCompactIn() ? 0 : root.padRight - pad;
+            final int bleedL = inQuote ? 0 : root.padLeft - pad;
+            final int bleedR = inQuote ? 0 : root.padRight - pad;
             final boolean fit = availWidth() > imgWidth;
             if (inQuote) {
                 canvas.save();
@@ -6927,10 +6921,6 @@ public class RichMessageLayout {
                 rad = dp(SharedConfig.bubbleRadius);
             }
             final int nearRad = Math.min(dp(3), rad);
-            if (root.isCompactIn()) {
-                imageReceiver.setRoundRadius(dp(COMPACT_MEDIA_RADIUS));
-                return;
-            }
             imageReceiver.setRoundRadius(first && !root.hasNameOffset() && (root.isOut() || !root.isPinnedTop()) ? rad : nearRad, first && (!root.isOut() || !root.isPinnedTop()) ? rad : nearRad, nearRad, nearRad);
         }
 
@@ -7485,16 +7475,9 @@ public class RichMessageLayout {
             }
             mapBgPaint.setColor(root.getThemedColor(Theme.key_chat_inLocationBackground));
             final boolean inQuote = isInQuote();
-            final boolean compact = root.isCompactIn();
-            final int bleedL = inQuote || compact ? 0 : root.padLeft;
-            final int bleedR = inQuote || compact ? 0 : root.padRight;
-            if (compact) {
-                AndroidUtilities.rectTmp.set(0, 0, imgWidth, imgHeight);
-                canvas.drawRoundRect(AndroidUtilities.rectTmp, dp(COMPACT_MEDIA_RADIUS), dp(COMPACT_MEDIA_RADIUS), mapBgPaint);
-                imageReceiver.setRoundRadius(dp(COMPACT_MEDIA_RADIUS));
-            } else {
-                canvas.drawRect(-bleedL, 0, imgWidth + bleedR, imgHeight, mapBgPaint);
-            }
+            final int bleedL = inQuote ? 0 : root.padLeft;
+            final int bleedR = inQuote ? 0 : root.padRight;
+            canvas.drawRect(-bleedL, 0, imgWidth + bleedR, imgHeight, mapBgPaint);
 
             final Drawable placeholder = Theme.chat_locationDrawable[root.isOut() ? 1 : 0];
             if (placeholder != null) {
@@ -8738,7 +8721,7 @@ public class RichMessageLayout {
             }
             rowYPx[maxRow + 1] = Math.round(acc * pixelMaxHeight);
 
-            final int gap = dp(root.isCompactIn() ? 3 : 2);
+            final int gap = dp(2);
             for (int i = 0; i < positions.length; ++i) {
                 final MessageObject.GroupedMessagePosition p = positions[i];
                 int yPx = rowYPx[p.minY];
@@ -8793,10 +8776,6 @@ public class RichMessageLayout {
                 rad = dp(SharedConfig.bubbleRadius);
             }
             final int nearRad = Math.min(dp(3), rad);
-            if (root.isCompactIn()) {
-                imageReceiver.setRoundRadius(dp(COMPACT_MEDIA_RADIUS));
-                return;
-            }
             final int tl = top && left ? (first && !root.hasNameOffset() && (root.isOut() || !root.isPinnedTop()) ? rad : nearRad) : 0;
             final int tr = top && right ? (first && !root.hasNameOffset() && (!root.isOut() || !root.isPinnedTop()) ? rad : nearRad) : 0;
             final int br = bottom && right ? nearRad : 0;
@@ -8812,8 +8791,8 @@ public class RichMessageLayout {
             }
             final boolean inQuote = isInQuote();
             final int pad = dp(2);
-            final int padL = inQuote || root.isCompactIn() ? 0 : root.padLeft - pad;
-            final int padR = inQuote || root.isCompactIn() ? 0 : root.padRight - pad;
+            final int padL = inQuote ? 0 : root.padLeft - pad;
+            final int padR = inQuote ? 0 : root.padRight - pad;
             final float k = (this.maxWidth > 0 && (padL > 0 || padR > 0))
                 ? (this.maxWidth + padL + padR) / (float) this.maxWidth
                 : 1f;
@@ -8943,18 +8922,13 @@ public class RichMessageLayout {
             }
             final boolean inQuote = isInQuote();
             final int pad = dp(2);
-            final int padL = inQuote || root.isCompactIn() ? 0 : root.padLeft - pad;
-            final int padR = inQuote || root.isCompactIn() ? 0 : root.padRight - pad;
+            final int padL = inQuote ? 0 : root.padLeft - pad;
+            final int padR = inQuote ? 0 : root.padRight - pad;
             final int slideWidth = this.slideWidth + padL + padR;
             int clipTl = 0, clipTr = 0, clipBr = 0, clipBl = 0;
             canvas.save();
             if (inQuote) {
                 clipTl = clipTr = clipBr = clipBl = dp(8);
-                clipPath.rewind();
-                clipPath.addRoundRect(0, 0, this.slideWidth, slideHeight, clipTl, clipTl, Path.Direction.CW);
-                canvas.clipPath(clipPath);
-            } else if (root.isCompactIn()) {
-                clipTl = clipTr = clipBr = clipBl = dp(COMPACT_MEDIA_RADIUS);
                 clipPath.rewind();
                 clipPath.addRoundRect(0, 0, this.slideWidth, slideHeight, clipTl, clipTl, Path.Direction.CW);
                 canvas.clipPath(clipPath);

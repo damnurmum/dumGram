@@ -1060,19 +1060,6 @@ public class ReactionsLayoutInBubble {
                 }
             }
 
-            if (!paid && parentView instanceof ChatMessageCell && ((ChatMessageCell) parentView).isCompactMode()) {
-                // compact mode: neutral chips, solid over the plain background or the compact outgoing bubble
-                if (choosen) {
-                    backgroundColor = Theme.getColor(Theme.key_chat_compact_reactionBackgroundSelected, resourcesProvider);
-                    textColor = Theme.getColor(Theme.key_chat_compact_reactionTextSelected, resourcesProvider);
-                } else {
-                    final int under = isOutOwner() ? Theme.getCompactOutBubbleColor(resourcesProvider) : Theme.getColor(Theme.key_chat_compact_background, resourcesProvider);
-                    backgroundColor = ColorUtils.compositeColors(Theme.getColor(Theme.key_chat_compact_reactionBackground, resourcesProvider), under);
-                    textColor = Theme.getColor(Theme.key_chat_compact_reactionText, resourcesProvider);
-                }
-                serviceTextColor = textColor;
-                serviceBackgroundColor = backgroundColor;
-            }
             if (drawBgOnlyIfChosen) {
                 backgroundColor = 0;
                 serviceBackgroundColor = 0;

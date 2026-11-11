@@ -50,15 +50,9 @@ public class ChatUnreadCell extends FrameLayout implements Theme.Colorable {
         textView = new TextView(context);
         textView.setPadding(0, 0, 0, AndroidUtilities.dp(1));
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        ThemeBind.textColor(textView, Theme.isCompactMode(resourcesProvider) ? Theme.key_chat_compact_actionText : Theme.key_chat_unreadMessagesStartText, resourcesProvider);
+        ThemeBind.textColor(textView, Theme.key_chat_unreadMessagesStartText, resourcesProvider);
         textView.setTypeface(AndroidUtilities.bold());
         addView(textView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER, 32, 0, 32, 0));
-
-        if (Theme.isCompactMode(resourcesProvider)) {
-            // compact mode: a flat strip like compact action cells, no divider shadow and arrow
-            ThemeBind.fillBackground(backgroundLayout, Theme.createRoundRectDrawable(0, getColor(Theme.key_chat_compact_actionBackground)), ThemeBind.of(Theme.key_chat_compact_actionBackground), resourcesProvider);
-            imageView.setVisibility(GONE);
-        }
     }
 
     public void setText(String text) {

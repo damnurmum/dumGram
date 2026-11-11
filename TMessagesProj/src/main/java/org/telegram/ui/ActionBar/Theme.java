@@ -846,24 +846,6 @@ public class Theme {
                 inBubble = getColorFromTable(currentColors, key_chat_inBubble, null);
             }
 
-            if (accentColor != parentTheme.accentBaseColor || myMessagesAccentColor != 0 || info != null && info.emoticon != null) {
-                // compact mode's outgoing keys are neutral, so the hue shift above leaves them as is:
-                // follow the accent the way the regular bubble does
-                final int replyLine = colorInTable(currentColors, key_chat_outReplyLine);
-                currentColors.put(key_chat_compact_outBackground, outBubble | 0xFF000000);
-                currentColors.put(key_chat_compact_outTimeText, colorInTable(currentColors, key_chat_outTimeText));
-                currentColors.put(key_chat_compact_outCheck, colorInTable(currentColors, key_chat_outSentCheckRead));
-                currentColors.put(key_chat_compact_outReplyLine, replyLine);
-                currentColors.put(key_chat_compact_outReplyText, colorInTable(currentColors, key_chat_outReplyNameText));
-                currentColors.put(key_chat_compact_outReplyBackground, Theme.multAlpha(replyLine, .10f));
-                currentColors.put(key_chat_compact_outAccent, colorInTable(currentColors, key_chat_outFileNameText));
-                currentColors.put(key_chat_compact_outAccentFill, colorInTable(currentColors, key_chat_outLoader));
-                currentColors.put(key_chat_compact_outAccentIcon, colorInTable(currentColors, key_chat_outMediaIcon));
-                currentColors.put(key_chat_compact_outSecondaryText, colorInTable(currentColors, key_chat_outFileInfoText));
-                currentColors.put(key_chat_compact_outAccentLight, colorInTable(currentColors, key_chat_outFileBackground));
-                currentColors.put(key_chat_compact_outAccentBorder, colorInTable(currentColors, key_chat_outTableBorder));
-            }
-
             int gradientAverageColor = outBubble;
             if (info != null && info.emoticon != null && !isDarkTheme) {
                 currentColors.delete(key_chat_selectedBackground);
@@ -2182,15 +2164,6 @@ public class Theme {
         default ColorFilter getAnimatedEmojiColorFilter() {
             return Theme.chat_animatedEmojiTextColorFilter;
         }
-
-        /** A chat's provider answers for its dialog, see SharedConfig#isCompactMode(int, long). */
-        default boolean isCompactMode() {
-            return SharedConfig.compactMode;
-        }
-    }
-
-    public static boolean isCompactMode(ResourcesProvider resourcesProvider) {
-        return resourcesProvider != null ? resourcesProvider.isCompactMode() : SharedConfig.compactMode;
     }
 
     private static final Object sync = new Object();
@@ -2858,48 +2831,6 @@ public class Theme {
     public static final int key_chat_inBubble = colorsCount++;
     public static final int key_chat_inBubbleSelectedOverlay = colorsCount++;
     public static final int key_chat_inBubbleShadow = colorsCount++;
-    public static final int key_chat_compact_background = colorsCount++;
-    public static final int key_chat_compact_backgroundGradient = colorsCount++;
-    // compact mode's glass: its outline (0: the white highlight instead), its shadow and the tight shadow around it
-    public static final int key_chat_compact_glassOutline = colorsCount++;
-    public static final int key_chat_compact_glassShadow = colorsCount++;
-    public static final int key_chat_compact_glassHairline = colorsCount++;
-    public static final int key_chat_compact_topicSeparatorText = colorsCount++;
-    // the outlines of the input field's and of the bottom buttons' glass (0 for none) and the fades at the chat's edges
-    public static final int key_chat_compact_inputGlassOutline = colorsCount++;
-    public static final int key_chat_compact_buttonGlassOutline = colorsCount++;
-    public static final int key_chat_compact_fadeEdge = colorsCount++;
-    public static final int key_chat_compact_fadeMiddle = colorsCount++;
-    public static final int key_chat_compact_actionBackground = colorsCount++;
-    public static final int key_chat_compact_actionText = colorsCount++;
-    public static final int key_chat_compact_actionIcon = colorsCount++;
-    public static final int key_chat_compact_botButtonText = colorsCount++;
-    public static final int key_chat_compact_pullingDownText = colorsCount++;
-    public static final int key_chat_compact_topicEmptyText = colorsCount++;
-    public static final int key_chat_compact_progress = colorsCount++;
-    public static final int key_chat_compact_outBackground = colorsCount++;
-    public static final int key_chat_compact_outTimeText = colorsCount++;
-    public static final int key_chat_compact_outCheck = colorsCount++;
-    public static final int key_chat_compact_outReplyBackground = colorsCount++;
-    public static final int key_chat_compact_outReplyLine = colorsCount++;
-    public static final int key_chat_compact_outReplyText = colorsCount++;
-    public static final int key_chat_compact_inTimeText = colorsCount++;
-    public static final int key_chat_compact_replyText = colorsCount++;
-    public static final int key_chat_compact_sideButtonIcon = colorsCount++;
-    public static final int key_chat_compact_inAudioDuration = colorsCount++;
-    public static final int key_chat_compact_inWaveform = colorsCount++;
-    public static final int key_chat_compact_inWaveformBackground = colorsCount++;
-    public static final int key_chat_compact_inTranscribeButton = colorsCount++;
-    public static final int key_chat_compact_outAccent = colorsCount++;
-    public static final int key_chat_compact_outAccentFill = colorsCount++;
-    public static final int key_chat_compact_outAccentIcon = colorsCount++;
-    public static final int key_chat_compact_outSecondaryText = colorsCount++;
-    public static final int key_chat_compact_outAccentLight = colorsCount++;
-    public static final int key_chat_compact_outAccentBorder = colorsCount++;
-    public static final int key_chat_compact_reactionBackground = colorsCount++;
-    public static final int key_chat_compact_reactionText = colorsCount++;
-    public static final int key_chat_compact_reactionBackgroundSelected = colorsCount++;
-    public static final int key_chat_compact_reactionTextSelected = colorsCount++;
 
     public static final int key_actionBarActionModeReaction = colorsCount++;
     public static final int key_actionBarActionModeReactionText = colorsCount++;
@@ -3619,7 +3550,6 @@ public class Theme {
         fallbackKeys.put(key_changephoneinfo_image2, key_featuredStickers_addButton);
         fallbackKeys.put(key_graySectionText, key_windowBackgroundWhiteGrayText2);
         fallbackKeys.put(key_chat_inMediaIcon, key_chat_inBubble);
-        fallbackKeys.put(key_chat_compact_background, key_windowBackgroundWhite);
         fallbackKeys.put(key_chat_outMediaIcon, key_chat_outBubble);
         fallbackKeys.put(key_chat_inMediaIconSelected, key_chat_inBubbleSelected);
         fallbackKeys.put(key_chat_outMediaIconSelected, key_chat_outBubbleSelected);
@@ -8710,9 +8640,6 @@ public class Theme {
             if (!bg && !disallowChangeServiceMessageColor) {
                 applyChatServiceMessageColor();
                 applyChatMessageSelectedBackgroundColor();
-            } else if (SharedConfig.compactMode && !disallowChangeServiceMessageColor) {
-                // service colors above were reset to the wallpaper ones, compact mode has its own
-                applyChatServiceMessageColor();
             }
         }
     }
@@ -8795,17 +8722,7 @@ public class Theme {
         int servicePressedColor;
         serviceMessageColor = serviceMessageColorBackup;
         serviceSelectedMessageColor = serviceSelectedMessageColorBackup;
-        // compact mode has a plain background, so service elements get a flat tint instead of a blurred wallpaper
-        final boolean compact = SharedConfig.compactMode && custom == null && wallpaperOverride == null;
-        if (compact) {
-            // blended over the background so service elements are opaque
-            final int background = getColor(key_chat_compact_background);
-            final int actionColor = getColor(key_chat_compact_actionBackground);
-            serviceColor = ColorUtils.compositeColors(actionColor, background);
-            servicePressedColor = ColorUtils.compositeColors(ColorUtils.setAlphaComponent(actionColor, Math.min(0xFF, Color.alpha(actionColor) * 2)), background);
-            serviceMessageColor = serviceColor;
-            serviceSelectedMessageColor = servicePressedColor;
-        } else if (custom != null && custom.length >= 2) {
+        if (custom != null && custom.length >= 2) {
             serviceColor = custom[0];
             servicePressedColor = custom[1];
             serviceMessageColor = custom[0];
@@ -8826,7 +8743,7 @@ public class Theme {
             }
         }
         Drawable drawable = wallpaperOverride != null ? wallpaperOverride : currentWallpaper;
-        boolean drawServiceGradient = !compact && (drawable instanceof MotionBackgroundDrawable || drawable instanceof BitmapDrawable) && SharedConfig.getDevicePerformanceClass() != SharedConfig.PERFORMANCE_CLASS_LOW && LiteMode.isEnabled(LiteMode.FLAG_CHAT_BACKGROUND);
+        boolean drawServiceGradient = (drawable instanceof MotionBackgroundDrawable || drawable instanceof BitmapDrawable) && SharedConfig.getDevicePerformanceClass() != SharedConfig.PERFORMANCE_CLASS_LOW && LiteMode.isEnabled(LiteMode.FLAG_CHAT_BACKGROUND);
         if (drawServiceGradient) {
             Bitmap newBitmap = null;
             if (drawable instanceof MotionBackgroundDrawable) {
@@ -8868,9 +8785,9 @@ public class Theme {
             serviceBitmap = null;
             serviceBitmapShader = null;
 
-            final int textKey = compact ? key_chat_compact_actionText : key_chat_serviceText;
-            final int linkKey = compact ? key_chat_compact_actionText : key_chat_serviceLink;
-            final int iconKey = compact ? key_chat_compact_actionIcon : key_chat_serviceIcon;
+            final int textKey = key_chat_serviceText;
+            final int linkKey = key_chat_serviceLink;
+            final int iconKey = key_chat_serviceIcon;
             setDrawableColorByKey(chat_msgStickerPinnedDrawable, textKey);
             setDrawableColorByKey(chat_msgStickerCheckDrawable, textKey);
             setDrawableColorByKey(chat_msgStickerHalfCheckDrawable, textKey);
@@ -8890,17 +8807,12 @@ public class Theme {
             setDrawableColorByKey(chat_botLockDrawable, iconKey);
             setDrawableColorByKey(chat_botInviteDrawable, iconKey);
             setDrawableColorByKey(chat_botLinkDrawable, iconKey);
-            chat_botButtonPaint.setColor(getColor(compact ? key_chat_compact_botButtonText : key_chat_botButtonText));
-            if (compact) {
-                setDrawableColorByKey(chat_closeIconDrawable, iconKey);
-                setDrawableColorByKey(chat_moreIconDrawable, iconKey);
-            } else {
-                if (chat_closeIconDrawable != null) {
-                    chat_closeIconDrawable.setColorFilter(null);
-                }
-                if (chat_moreIconDrawable != null) {
-                    chat_moreIconDrawable.setColorFilter(null);
-                }
+            chat_botButtonPaint.setColor(getColor(key_chat_botButtonText));
+            if (chat_closeIconDrawable != null) {
+                chat_closeIconDrawable.setColorFilter(null);
+            }
+            if (chat_moreIconDrawable != null) {
+                chat_moreIconDrawable.setColorFilter(null);
             }
         }
 
@@ -8947,7 +8859,7 @@ public class Theme {
             chat_actionBackgroundSelectedPaint.setColorFilter(null);
             chat_actionBackgroundSelectedPaint.setShader(null);
 
-            chat_actionBackgroundGradientDarkenPaint.setAlpha(compact ? 0 : 0x15);
+            chat_actionBackgroundGradientDarkenPaint.setAlpha(0x15);
         }
     }
 
@@ -9145,12 +9057,6 @@ public class Theme {
 
     public static int getColor(int key, ResourcesProvider provider) {
         if (provider != null) {
-            if (provider.isCompactMode()) {
-                final Integer compactColor = getCompactColor(key, provider);
-                if (compactColor != null) {
-                    return compactColor;
-                }
-            }
             return provider.getColor(key);
         }
         return getColor(key);
@@ -9169,13 +9075,6 @@ public class Theme {
     }
 
     public static int getColor(int key, boolean[] isDefault, boolean ignoreAnimation) {
-        if (SharedConfig.compactMode) {
-            // compact mode swaps some message colors for its own keys, see getCompactColor
-            final Integer compactColor = getCompactColor(key, null);
-            if (compactColor != null) {
-                return compactColor;
-            }
-        }
         if (!ignoreAnimation && animatingColors != null) {
             int index = animatingColors.indexOfKey(key);
             if (index >= 0) {
@@ -9327,69 +9226,6 @@ public class Theme {
 
     public static void setDrawableColorByKey(Drawable drawable, int key) {
         setDrawableColor(drawable, getColor(key));
-    }
-
-    public static int getCompactOutBubbleColor(ResourcesProvider resourcesProvider) {
-        return ColorUtils.compositeColors(getColor(key_chat_compact_outBackground, resourcesProvider), getColor(key_chat_compact_background, resourcesProvider));
-    }
-
-    /**
-     * Compact mode replaces some outgoing message colors with its own keys, blended to be opaque.
-     * Returns null when compact mode is off or the key is not replaced.
-     */
-    private static final int COMPACT_DIRECT = 1, COMPACT_OVER_OUT_BUBBLE = 2, COMPACT_OVER_BACKGROUND = 3;
-    // regular key -> (mode << 16) | compact key, 0 when compact mode doesn't replace it
-    private static int[] compactColorMap;
-
-    private static void mapCompact(int mode, int compactKey, int... keys) {
-        for (int key : keys) {
-            compactColorMap[key] = (mode << 16) | compactKey;
-        }
-    }
-
-    private static int[] getCompactColorMap() {
-        if (compactColorMap == null) {
-            compactColorMap = new int[colorsCount];
-            mapCompact(COMPACT_OVER_OUT_BUBBLE, key_chat_compact_outTimeText, key_chat_outTimeText, key_chat_outTimeSelectedText, key_chat_outViews, key_chat_outViewsSelected);
-            mapCompact(COMPACT_OVER_BACKGROUND, key_chat_compact_inTimeText, key_chat_inTimeText, key_chat_inTimeSelectedText, key_chat_inViews, key_chat_inViewsSelected);
-            mapCompact(COMPACT_DIRECT, key_chat_compact_outCheck, key_chat_outSentCheck, key_chat_outSentCheckSelected, key_chat_outSentCheckRead, key_chat_outSentCheckReadSelected, key_chat_outSentClock, key_chat_outSentClockSelected);
-            mapCompact(COMPACT_DIRECT, key_chat_compact_outReplyLine, key_chat_outReplyLine, key_chat_outReplyLine2);
-            mapCompact(COMPACT_DIRECT, key_chat_compact_outReplyText, key_chat_outReplyNameText, key_chat_outReplyMessageText, key_chat_outReplyMediaMessageText, key_chat_outReplyMediaMessageSelectedText);
-            // outgoing message accents: neutral instead of the theme's green
-            mapCompact(COMPACT_DIRECT, key_chat_compact_outAccent, key_chat_outInstant, key_chat_outInstantSelected, key_chat_outPreviewInstantText, key_chat_outForwardedNameText, key_chat_outViaBotNameText, key_chat_outPsaNameText, key_chat_outSiteNameText, key_chat_outContactNameText, key_chat_outAudioTitleText, key_chat_outFileNameText, key_chat_outLocationIcon, key_chat_outMenu, key_chat_outMenuSelected, key_chat_outQuote, key_chat_outPreviewLine, key_chat_outAdminText, key_chat_outAdminSelectedText);
-            mapCompact(COMPACT_DIRECT, key_chat_compact_outAccentFill, key_chat_outLoader, key_chat_outLoaderSelected, key_chat_outContactBackground, key_chat_outAudioSeekbarFill, key_chat_outVoiceSeekbarFill);
-            mapCompact(COMPACT_DIRECT, key_chat_compact_outAccentIcon, key_chat_outMediaIcon, key_chat_outMediaIconSelected, key_chat_outContactIcon, key_chat_outAudioProgress, key_chat_outAudioSelectedProgress);
-            mapCompact(COMPACT_OVER_OUT_BUBBLE, key_chat_compact_outSecondaryText, key_chat_outFileInfoText, key_chat_outFileInfoSelectedText, key_chat_outVenueInfoText, key_chat_outVenueInfoSelectedText, key_chat_outAudioDurationText, key_chat_outAudioDurationSelectedText);
-            mapCompact(COMPACT_OVER_OUT_BUBBLE, key_chat_compact_outAccentLight, key_chat_outAudioSeekbar, key_chat_outAudioSeekbarSelected, key_chat_outVoiceSeekbar, key_chat_outVoiceSeekbarSelected, key_chat_outFileProgress, key_chat_outFileProgressSelected, key_chat_outFileBackground, key_chat_outFileBackgroundSelected, key_chat_outTableBackground, key_chat_outArticleCodeScrollbarBackground);
-            mapCompact(COMPACT_OVER_OUT_BUBBLE, key_chat_compact_outAccentBorder, key_chat_outTableBorder, key_chat_outDivider);
-            mapCompact(COMPACT_DIRECT, key_chat_compact_inAudioDuration, key_chat_inAudioDurationText, key_chat_inAudioDurationSelectedText);
-            mapCompact(COMPACT_DIRECT, key_chat_compact_inWaveform, key_chat_inVoiceSeekbarFill);
-            mapCompact(COMPACT_DIRECT, key_chat_compact_inWaveformBackground, key_chat_inVoiceSeekbar, key_chat_inVoiceSeekbarSelected);
-            // the voice/round transcribe button is tinted with it; reaction chips read compact keys directly
-            mapCompact(COMPACT_DIRECT, key_chat_compact_inTranscribeButton, key_chat_inReactionButtonBackground);
-            // names, via bots and replies next to stickers sit on the light action pill, not on a wallpaper
-            mapCompact(COMPACT_DIRECT, key_chat_compact_actionText, key_chat_stickerNameText, key_chat_stickerViaBotNameText, key_chat_stickerReplyNameText, key_chat_stickerReplyMessageText);
-        }
-        return compactColorMap;
-    }
-
-    public static Integer getCompactColor(int key, ResourcesProvider resourcesProvider) {
-        if (!isCompactMode(resourcesProvider) || key < 0 || key >= colorsCount) {
-            return null;
-        }
-        final int entry = getCompactColorMap()[key];
-        if (entry == 0) {
-            return null;
-        }
-        final int compactKey = entry & 0xFFFF;
-        switch (entry >> 16) {
-            case COMPACT_OVER_OUT_BUBBLE:
-                return ColorUtils.compositeColors(getColor(compactKey, resourcesProvider), getCompactOutBubbleColor(resourcesProvider));
-            case COMPACT_OVER_BACKGROUND:
-                return ColorUtils.compositeColors(getColor(compactKey, resourcesProvider), getColor(key_chat_compact_background, resourcesProvider));
-            default:
-                return getColor(compactKey, resourcesProvider);
-        }
     }
 
     public static void setEmojiDrawableColor(Drawable drawable, int color, boolean selected) {

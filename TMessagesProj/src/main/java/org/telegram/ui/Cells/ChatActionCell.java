@@ -3702,8 +3702,7 @@ public class ChatActionCell extends BaseCell implements DownloadController.FileD
 
         int oldAlpha = -1;
         int oldAlpha2 = -1;
-        // compact mode has a solid background, keep the floating date opaque too
-        final float floatingAlpha = isFloating() && !Theme.isCompactMode(themeDelegate) ? .75f : 1f;
+        final float floatingAlpha = isFloating() ? .75f : 1f;
         if (fromParent && (getAlpha() != 1f || isFloating())) {
             oldAlpha = backgroundPaint.getAlpha();
             oldAlpha2 = darkenBackgroundPaint.getAlpha();

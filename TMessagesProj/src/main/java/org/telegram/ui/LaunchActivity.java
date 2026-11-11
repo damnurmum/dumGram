@@ -998,26 +998,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 protected boolean isActionBarVisible() {
                     return false;
                 }
-
-                // compact mode chats have a plain background, so does the empty tablet pane
-                private ColorDrawable compactBackground;
-
-                @Override
-                protected Drawable getNewDrawable() {
-                    if (SharedConfig.compactMode) {
-                        final int color = Theme.getColor(Theme.key_chat_compact_background);
-                        if (compactBackground == null || compactBackground.getColor() != color) {
-                            compactBackground = new ColorDrawable(color);
-                        }
-                        return compactBackground;
-                    }
-                    return super.getNewDrawable();
-                }
-
-                @Override
-                protected boolean getNewDrawableMotion() {
-                    return !SharedConfig.compactMode && super.getNewDrawableMotion();
-                }
             };
             backgroundTablet.setOccupyStatusBar(false);
             backgroundTablet.setBackgroundImage(Theme.getCachedWallpaper(), Theme.isWallpaperMotion());

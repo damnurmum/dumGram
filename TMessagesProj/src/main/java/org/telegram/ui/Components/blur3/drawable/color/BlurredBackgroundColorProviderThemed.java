@@ -3,7 +3,6 @@ package org.telegram.ui.Components.blur3.drawable.color;
 import androidx.core.graphics.ColorUtils;
 
 import org.telegram.messenger.AndroidUtilities;
-import android.graphics.Color;
 
 import org.telegram.messenger.LiteMode;
 import org.telegram.messenger.SharedConfig;
@@ -34,48 +33,6 @@ public class BlurredBackgroundColorProviderThemed implements BlurredBackgroundCo
     }
 
     private int backgroundColor, shadowColor, strokeColorTop, strokeColorBottom;
-
-    // compact mode draws this glass as in the design: an outline (this key; 0 for none) and soft shadows instead of the white highlight
-    private int compactOutlineKey = -1;
-
-    public BlurredBackgroundColorProviderThemed setCompactOutlineKey(int key) {
-        compactOutlineKey = key;
-        updateColors();
-        return this;
-    }
-
-    private boolean isCompactGlass() {
-        return compactOutlineKey >= 0 && Theme.isCompactMode(resourcesProvider);
-    }
-
-    private boolean hasCompactOutline() {
-        return isCompactGlass() && Color.alpha(Theme.getColor(compactOutlineKey, resourcesProvider)) != 0;
-    }
-
-    @Override
-    public int getOutlineColor() {
-        return isCompactGlass() ? Theme.getColor(compactOutlineKey, resourcesProvider) : 0;
-    }
-
-    @Override
-    public float getOutlineWidth() {
-        return AndroidUtilities.dpf2(0.6f);
-    }
-
-    @Override
-    public int getOutlineShadowColor() {
-        return isCompactGlass() ? Theme.getColor(Theme.key_chat_compact_glassHairline, resourcesProvider) : 0;
-    }
-
-    @Override
-    public float getShadowRadiusOverride() {
-        return isCompactGlass() ? AndroidUtilities.dpf2(2.25f) : -1;
-    }
-
-    @Override
-    public float getShadowDyOverride() {
-        return isCompactGlass() ? AndroidUtilities.dpf2(1) : -1;
-    }
 
     public boolean isDark() {
         final int color = Theme.getColor(backgroundColorId, resourcesProvider);
@@ -111,9 +68,6 @@ public class BlurredBackgroundColorProviderThemed implements BlurredBackgroundCo
     @Override
     public int getShadowColor() {
         checkThemeGeneration();
-        if (isCompactGlass()) {
-            return Theme.getColor(Theme.key_chat_compact_glassShadow, resourcesProvider);
-        }
         return shadowColor;
     }
 
@@ -126,14 +80,12 @@ public class BlurredBackgroundColorProviderThemed implements BlurredBackgroundCo
     @Override
     public int getStrokeColorTop() {
         checkThemeGeneration();
-        if (hasCompactOutline()) return 0;
         return strokeColorTop;
     }
 
     @Override
     public int getStrokeColorBottom() {
         checkThemeGeneration();
-        if (hasCompactOutline()) return 0;
         return strokeColorBottom;
     }
 }

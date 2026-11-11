@@ -456,8 +456,7 @@ public class ReplyMessageLine {
             if (type == TYPE_CODE && !messageObject.isOutOwner()) {
                 color1 = color2 = color3 = Theme.getColor(Theme.key_chat_inCodeBackground, resourcesProvider);
             } else {
-                final Integer compactLine = Theme.getCompactColor(Theme.key_chat_outReplyLine, resourcesProvider);
-                color1 = color2 = color3 = compactLine != null ? compactLine : Theme.getColor(hasColor2 || hasColor3 ? Theme.key_chat_outReplyLine2 : Theme.key_chat_outReplyLine, resourcesProvider);
+                color1 = color2 = color3 = Theme.getColor(hasColor2 || hasColor3 ? Theme.key_chat_outReplyLine2 : Theme.key_chat_outReplyLine, resourcesProvider);
             }
             if (hasColor3) {
                 reversedOut = true;
@@ -469,11 +468,6 @@ public class ReplyMessageLine {
             }
             backgroundColor = Theme.multAlpha(color3, dark ? 0.12f : 0.10f);
             nameColor = Theme.getColor(Theme.key_chat_outReplyNameText, resourcesProvider);
-            if (messageObject.isCompactMode() && messageObject.isOutOwner()) {
-                // drawn over the solid compact bubble, so blending makes it opaque without changing how it looks
-                backgroundColor = ColorUtils.compositeColors(Theme.getColor(Theme.key_chat_compact_outReplyBackground, resourcesProvider), Theme.getCompactOutBubbleColor(resourcesProvider));
-                nameColor = Theme.getCompactColor(Theme.key_chat_outReplyNameText, resourcesProvider);
-            }
         }
         if ((type == TYPE_REPLY || type == TYPE_LINK || type == TYPE_CONTACT) && messageObject != null && messageObject.overrideLinkEmoji != -1) {
             emojiDocumentId = messageObject.overrideLinkEmoji;

@@ -3107,7 +3107,6 @@ public class ChatActivity extends BaseFragment implements
         }
 
 
-        agentBotChat = dialog_id > 0 && getMessagesController().config.agentBotIds.contains(dialog_id);
         themeDelegate = parentThemeDelegate != null ? parentThemeDelegate : new ThemeDelegate();
         if (themeDelegate.isThemeChangeAvailable(false)) {
             observersGroup.addGlobal(NotificationCenter.needSetDayNightTheme);
@@ -3587,14 +3586,13 @@ public class ChatActivity extends BaseFragment implements
                 return super.getBackgroundColor();
             }
         };
-        blurredBackgroundColorProvider.setCompactOutlineKey(Theme.key_chat_compact_inputGlassOutline);
         // the bottom buttons' glass: as the input field's, with an outline of its own
         blurredBackgroundButtonsColorProvider = new BlurredBackgroundColorProviderThemed(themeDelegate, Theme.key_chat_messagePanelBackground) {
             @Override
             public int getBackgroundColor() {
                 return blurredBackgroundColorProvider.getBackgroundColor();
             }
-        }.setCompactOutlineKey(Theme.key_chat_compact_buttonGlassOutline);
+        };
         blurredBackgroundColorProviderWhite = new BlurredBackgroundColorProviderThemed(themeDelegate, Theme.key_windowBackgroundWhite) {
             @Override
             public int getBackgroundColor() {
@@ -7016,7 +7014,6 @@ public class ChatActivity extends BaseFragment implements
         contentView.addView(chatListView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
 
         chatActivityFadeView = new ChatActivityFadeView(context);
-        chatActivityFadeView.setResourcesProvider(themeDelegate);
         chatActivityFadeView.setup(navbarContentDrawableFactory);
         chatActivityFadeView.setFadeHeightTop(dp(48));
         chatActivityFadeView.setFadeHeightBottom(dp(48));
@@ -7062,7 +7059,7 @@ public class ChatActivity extends BaseFragment implements
 
         progressBar = new RadialProgressView(context, themeDelegate);
         progressBar.setSize(AndroidUtilities.dp(28));
-        progressBar.setProgressColor(getThemedColor(isCompactMode() ? Theme.key_chat_compact_progress : Theme.key_chat_serviceText));
+        progressBar.setProgressColor(getThemedColor(Theme.key_chat_serviceText));
         progressView.addView(progressBar, LayoutHelper.createFrame(32, 32, Gravity.CENTER));
 
         floatingTopicSeparator = new TopicSeparator.Cell(context, currentAccount, themeDelegate) {
@@ -9962,13 +9959,6 @@ public class ChatActivity extends BaseFragment implements
     private boolean isAllChats() {
         return topicsTabs != null && threadMessageId == 0;
     }
-    // agent bot chats are compact whatever the setting, see SharedConfig#isCompactMode(int, long)
-    private boolean agentBotChat;
-
-    public boolean isCompactMode() {
-        return SharedConfig.compactMode || agentBotChat;
-    }
-
     private boolean isSideMenued() {
         return topicsTabs != null ? topicsTabs.areTabsEnabled() : ChatObject.isForum(currentChat) && areTopicsTabsEnabled();
     }
@@ -9982,9 +9972,6 @@ public class ChatActivity extends BaseFragment implements
         for (int i = 0; i < arr.size(); i++) {
             MessageObject object = arr.get(i);
             if (object != null && object.type == MessageObject.TYPE_ARTICLE && WidgetMedia.isWidget(MessageObject.getMedia(object.messageOwner))) {
-                object.updateSideMenuEnabled(true);
-            } else if (object != null && object.isCompactMode() && !object.isOutOwner() && object.getGroupId() != 0) {
-                // compact albums are laid out past the side menu (GroupedMessages#applyCompactSpans)
                 object.updateSideMenuEnabled(true);
             }
         }
@@ -12627,7 +12614,7 @@ public class ChatActivity extends BaseFragment implements
                         }
                         outline.setRoundRect(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight(), maxRad);
                     } else {
-                        outline.setOval(0, 0, AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode()), AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode()));
+                        outline.setOval(0, 0, AndroidUtilities.roundPlayingMessageSize(isSideMenued()), AndroidUtilities.roundPlayingMessageSize(isSideMenued()));
                     }
                 }
             });
@@ -12650,7 +12637,7 @@ public class ChatActivity extends BaseFragment implements
             parent = null;
         }
         if (parent == null) {
-            contentView.addView(videoPlayerContainer, 1, new FrameLayout.LayoutParams(AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode()), AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode())));
+            contentView.addView(videoPlayerContainer, 1, new FrameLayout.LayoutParams(AndroidUtilities.roundPlayingMessageSize(isSideMenued()), AndroidUtilities.roundPlayingMessageSize(isSideMenued())));
         }
         videoPlayerContainer.setTag(null);
         aspectRatioFrameLayout.setDrawingReady(false);
@@ -16438,13 +16425,13 @@ public class ChatActivity extends BaseFragment implements
                     FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) videoPlayerContainer.getLayoutParams();
                     if (messageObject.isRoundVideo()) {
                         videoPlayerContainer.setTag(R.id.parent_tag, null);
-                        if (layoutParams.width != AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode()) || layoutParams.height != AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode())) {
-                            layoutParams.width = layoutParams.height = AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode());
+                        if (layoutParams.width != AndroidUtilities.roundPlayingMessageSize(isSideMenued()) || layoutParams.height != AndroidUtilities.roundPlayingMessageSize(isSideMenued())) {
+                            layoutParams.width = layoutParams.height = AndroidUtilities.roundPlayingMessageSize(isSideMenued());
                             aspectRatioFrameLayout.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
                             videoPlayerContainer.setLayoutParams(layoutParams);
                         }
-                        float scale = (AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode()) + AndroidUtilities.roundMessageInset * 2) / (float) AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode());
-                        float transitionScale = messageCell.getPhotoImage().getImageWidth() / AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode());
+                        float scale = (AndroidUtilities.roundPlayingMessageSize(isSideMenued()) + AndroidUtilities.roundMessageInset * 2) / (float) AndroidUtilities.roundPlayingMessageSize(isSideMenued());
+                        float transitionScale = messageCell.getPhotoImage().getImageWidth() / AndroidUtilities.roundPlayingMessageSize(isSideMenued());
                         if (videoPlayerContainer.getScaleX() != transitionScale) {
                             videoPlayerContainer.invalidate();
                             fragmentView.invalidate();
@@ -16480,7 +16467,7 @@ public class ChatActivity extends BaseFragment implements
                     if (checkTextureViewPosition && messageObject.isVideo()) {
                         MediaController.getInstance().cleanupPlayer(true, true);
                     } else {
-                        videoPlayerContainer.setTranslationY(-AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode()) - 100);
+                        videoPlayerContainer.setTranslationY(-AndroidUtilities.roundPlayingMessageSize(isSideMenued()) - 100);
                         fragmentView.invalidate();
                         if (messageObject.isRoundVideo() || messageObject.isVideo()) {
                             if (checkTextureViewPosition || PipRoundVideoView.getInstance() != null) {
@@ -16993,7 +16980,7 @@ public class ChatActivity extends BaseFragment implements
                     if (checkTextureViewPosition && messageObject.isVideo()) {
                         MediaController.getInstance().cleanupPlayer(true, true);
                     } else {
-                        videoPlayerContainer.setTranslationY(-AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode()) - 100);
+                        videoPlayerContainer.setTranslationY(-AndroidUtilities.roundPlayingMessageSize(isSideMenued()) - 100);
                         fragmentView.invalidate();
                         if ((messageObject.isRoundVideo() || messageObject.isVideo()) && messageObject.eventId == 0 && checkTextureViewPosition && !chatListView.isFastScrollAnimationRunning()) {
                             MediaController.getInstance().setCurrentVideoVisible(false);
@@ -17964,7 +17951,6 @@ public class ChatActivity extends BaseFragment implements
             navbarContentSourceWallpaper.setSource(source);
             invalidateGlassSources();
             if (chatActivityFadeView != null) {
-                chatActivityFadeView.setOverlayColor(isCompactMode() ? getThemedColor(Theme.key_chat_compact_backgroundGradient) : 0);
                 chatActivityFadeView.invalidate();
             }
             if (chatInputViewsContainer != null) {
@@ -18351,7 +18337,7 @@ public class ChatActivity extends BaseFragment implements
                         canvas.save();
                         canvas.scale(videoPlayerContainer.getScaleX(), videoPlayerContainer.getScaleY(), child.getX(), child.getY());
                         Theme.chat_roundVideoShadow.setAlpha(255);
-                        Theme.chat_roundVideoShadow.setBounds(x, y, x + AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode()) + AndroidUtilities.dp(6), y + AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode()) + AndroidUtilities.dp(6));
+                        Theme.chat_roundVideoShadow.setBounds(x, y, x + AndroidUtilities.roundPlayingMessageSize(isSideMenued()) + AndroidUtilities.dp(6), y + AndroidUtilities.roundPlayingMessageSize(isSideMenued()) + AndroidUtilities.dp(6));
                         Theme.chat_roundVideoShadow.draw(canvas);
                         canvas.restore();
                     }
@@ -18708,9 +18694,6 @@ public class ChatActivity extends BaseFragment implements
                                 canvas.translate(0, cell.getPaddingTop());
                                 cell.drawBackgroundInternal(canvas, true);
                                 canvas.restore();
-                            }
-                            if (cell != null && scrimGroup == null) {
-                                cell.drawCompactScrimBackground(canvas, scrimViewProgress);
                             }
                             child.draw(canvas);
                             if (cell != null && cell.hasOutboundsContent()) {
@@ -19097,7 +19080,7 @@ public class ChatActivity extends BaseFragment implements
                         if (messageObject.isRoundVideo() && MediaController.getInstance().isPlayingMessage(messageObject)) {
                             int p = chatListView.getChildAdapterPosition(child);
                             if (p >= 0) {
-                                chatLayoutManager.scrollToPositionWithOffset(p, (int) ((chatListView.getMeasuredHeight() - chatListViewPaddingTop - blurredViewBottomOffset + (keyboardHeight + chatEmojiViewPadding - keyboardHeightOld) - (keyboardVisible ? AndroidUtilities.roundMessageSize : AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode()))) / 2), false);
+                                chatLayoutManager.scrollToPositionWithOffset(p, (int) ((chatListView.getMeasuredHeight() - chatListViewPaddingTop - blurredViewBottomOffset + (keyboardHeight + chatEmojiViewPadding - keyboardHeightOld) - (keyboardVisible ? AndroidUtilities.roundMessageSize : AndroidUtilities.roundPlayingMessageSize(isSideMenued()))) / 2), false);
                                 chatAdapter.notifyItemChanged(p);
                                 adjustPanLayoutHelper.delayAnimation();
                                 waitingChatListItemAnimator = true;
@@ -19425,21 +19408,8 @@ public class ChatActivity extends BaseFragment implements
         }
 
         protected Drawable getNewDrawable() {
-            if (isCompactMode()) {
-                return getCompactBackground();
-            }
             Drawable drawable = themeDelegate.getWallpaperDrawable();
             return drawable != null ? drawable : super.getNewDrawable();
-        }
-
-        private ColorDrawable compactBackground;
-
-        Drawable getCompactBackground() {
-            final int color = getThemedColor(Theme.key_chat_compact_background);
-            if (compactBackground == null || compactBackground.getColor() != color) {
-                compactBackground = new ColorDrawable(color);
-            }
-            return compactBackground;
         }
 
         protected boolean getNewDrawableMotion() {
@@ -23716,7 +23686,7 @@ public class ChatActivity extends BaseFragment implements
                                     if (messageObject1.type != MessageObject.TYPE_ROUND_VIDEO) {
                                         offset -= cell.getPhotoImage().getImageY();
                                     } else {
-                                        offset -= (keyboardIsVisible ? AndroidUtilities.roundMessageSize : isSideMenued() ? AndroidUtilities.roundSidePlayingMessageSize : AndroidUtilities.roundPlayingMessageSize(isSideMenued(), isCompactMode())) / 2;
+                                        offset -= (keyboardIsVisible ? AndroidUtilities.roundMessageSize : isSideMenued() ? AndroidUtilities.roundSidePlayingMessageSize : AndroidUtilities.roundPlayingMessageSize(isSideMenued())) / 2;
                                     }
                                     chatLayoutManager.scrollToPositionWithOffset(position, offset, false);
                                 }
@@ -38352,10 +38322,8 @@ public class ChatActivity extends BaseFragment implements
                 });
             } else if (viewType == 2) {
                 final ChatUnreadCell unreadCell = new ChatUnreadCell(mContext, themeDelegate);
-                if (!isCompactMode()) {
-                    ThemeBind.textColor(unreadCell.getTextView(), Theme.key_chat_unreadMessagesStartText, themeDelegate);
-                    ThemeBind.drawableColorFilter(unreadCell.getBackgroundLayout(), unreadCell.getBackgroundLayout().getBackground(), Theme.key_chat_unreadMessagesStartBackground, themeDelegate, PorterDuff.Mode.MULTIPLY);
-                }
+                ThemeBind.textColor(unreadCell.getTextView(), Theme.key_chat_unreadMessagesStartText, themeDelegate);
+                ThemeBind.drawableColorFilter(unreadCell.getBackgroundLayout(), unreadCell.getBackgroundLayout().getBackground(), Theme.key_chat_unreadMessagesStartBackground, themeDelegate, PorterDuff.Mode.MULTIPLY);
                 view = unreadCell;
             } else if (viewType == 3) {
                 view = new BotHelpCell(mContext, currentAccount, themeDelegate) {
@@ -44002,32 +43970,6 @@ public class ChatActivity extends BaseFragment implements
             return currentColors != null && currentColors.size() > 0 ? isDark : Theme.isCurrentThemeDark();
         }
 
-        @Override
-        public boolean isCompactMode() {
-            return ChatActivity.this.isCompactMode();
-        }
-
-        // a compact chat in a non-compact app draws its bubbles and service elements with its own resources
-        private boolean ownCompactResources;
-
-        private void updateCompactResources() {
-            if (parentThemeDelegate != null || chatTheme != null || wallpaper != null) return;
-            final boolean own = isCompactMode() && !SharedConfig.compactMode;
-            if (!own && !ownCompactResources) return;
-            ownCompactResources = own;
-            currentPaints.clear();
-            currentDrawables.clear();
-            if (own) {
-                if (ApplicationLoader.applicationContext != null) {
-                    Theme.createChatResources(ApplicationLoader.applicationContext, false);
-                }
-                initDrawables();
-                initPaints();
-            }
-            initServiceMessageColors(Theme.getCachedWallpaperNonBlocking());
-            updateServiceMessageColor(1f);
-        }
-
         MessageDrawable animatingMessageDrawable;
         MessageDrawable animatingMessageMediaDrawable;
 
@@ -44042,9 +43984,6 @@ public class ChatActivity extends BaseFragment implements
                     setupChatTheme(chatTheme, wallpaper, false, true);
                 }
             }
-            if (!setup) {
-                updateCompactResources();
-            }
             if (!setup && ThemeEditorView.getInstance() == null) {
                 Theme.refreshThemeColors(true, true);
             } else {
@@ -44058,12 +43997,6 @@ public class ChatActivity extends BaseFragment implements
                 int index = animatingColors.indexOfKey(key);
                 if (index >= 0) {
                     return animatingColors.valueAt(index);
-                }
-            }
-            if (ownCompactResources) {
-                final Integer compactColor = Theme.getCompactColor(key, this);
-                if (compactColor != null) {
-                    return compactColor;
                 }
             }
             if (chatTheme == null) {
@@ -44131,7 +44064,7 @@ public class ChatActivity extends BaseFragment implements
 
         @Override
         public int getCurrentColor() {
-            return backgroundDrawable != null || ownCompactResources ? currentColor : Theme.currentColor;
+            return backgroundDrawable != null ? currentColor : Theme.currentColor;
         }
 
         public boolean isGiftTheme() {
@@ -44141,7 +44074,7 @@ public class ChatActivity extends BaseFragment implements
 
         @Override
         public boolean hasGradientService() {
-            return backgroundDrawable != null || ownCompactResources ? serviceShader != null : Theme.hasGradientService();
+            return backgroundDrawable != null ? serviceShader != null : Theme.hasGradientService();
         }
 
         @Override
@@ -44151,7 +44084,7 @@ public class ChatActivity extends BaseFragment implements
 
         @Override
         public Paint getPaint(String paintKey) {
-            return chatTheme != null || backgroundDrawable != null || ownCompactResources ? currentPaints.get(paintKey) : null;
+            return chatTheme != null || backgroundDrawable != null ? currentPaints.get(paintKey) : null;
         }
 
         public boolean isThemeChangeAvailable(boolean canEdit) {
@@ -44325,10 +44258,7 @@ public class ChatActivity extends BaseFragment implements
 
                 Theme.applyTheme(activeTheme, false, isDark);
                 initServiceMessageColors(backgroundDrawable);
-                ownCompactResources = false;
-                updateCompactResources();
             } else {
-                ownCompactResources = false;
                 if (ApplicationLoader.applicationContext != null) {
                     Theme.createChatResources(ApplicationLoader.applicationContext, false);
                 }
@@ -44511,10 +44441,6 @@ public class ChatActivity extends BaseFragment implements
             if (serviceColor == 0 || wallpaper != null) {
                 serviceColor = currentServiceMessageColor;
             }
-            final boolean compact = isCompactMode();
-            if (compact) {
-                serviceColor = ColorUtils.compositeColors(getCurrentColor(Theme.key_chat_compact_actionBackground), getCurrentColor(Theme.key_chat_compact_background));
-            }
             currentServiceColor = serviceColor;
 
             float dimAmount = 0;
@@ -44522,7 +44448,7 @@ public class ChatActivity extends BaseFragment implements
                 dimAmount = ((ChatBackgroundDrawable) backgroundDrawable).getDimAmount();
                 backgroundDrawable = ((ChatBackgroundDrawable) backgroundDrawable).getDrawable(false);
             }
-            drawServiceGradient = !compact && (backgroundDrawable instanceof MotionBackgroundDrawable || backgroundDrawable instanceof BitmapDrawable) && SharedConfig.getDevicePerformanceClass() != SharedConfig.PERFORMANCE_CLASS_LOW;
+            drawServiceGradient = (backgroundDrawable instanceof MotionBackgroundDrawable || backgroundDrawable instanceof BitmapDrawable) && SharedConfig.getDevicePerformanceClass() != SharedConfig.PERFORMANCE_CLASS_LOW;
             final boolean forceRecolorServiceMessages = isGiftTheme() && isDark;
 
             drawSelectedGradient = drawServiceGradient;
@@ -44670,11 +44596,10 @@ public class ChatActivity extends BaseFragment implements
             Paint msgBackgroundSelectedPaint = getPaint(Theme.key_paint_chatMessageBackgroundSelected);
 
             int serviceColor = currentServiceColor;
-            final boolean compact = isCompactMode();
-            int serviceTextColor = drawServiceGradient ? 0xffffffff : getCurrentColor(compact ? Theme.key_chat_compact_actionText : Theme.key_chat_serviceText, true);
-            int serviceLinkColor = drawServiceGradient ? 0xffffffff : getCurrentColor(compact ? Theme.key_chat_compact_actionText : Theme.key_chat_serviceLink, true);
-            int serviceButtonColor = drawServiceGradient ? 0xffffffff : getCurrentColor(compact ? Theme.key_chat_compact_botButtonText : Theme.key_chat_serviceLink, true);
-            int serviceIconColor = drawServiceGradient ? 0xffffffff : getCurrentColor(compact ? Theme.key_chat_compact_actionIcon : Theme.key_chat_serviceIcon, true);
+            int serviceTextColor = drawServiceGradient ? 0xffffffff : getCurrentColor(Theme.key_chat_serviceText, true);
+            int serviceLinkColor = drawServiceGradient ? 0xffffffff : getCurrentColor(Theme.key_chat_serviceLink, true);
+            int serviceButtonColor = drawServiceGradient ? 0xffffffff : getCurrentColor(Theme.key_chat_serviceLink, true);
+            int serviceIconColor = drawServiceGradient ? 0xffffffff : getCurrentColor(Theme.key_chat_serviceIcon, true);
             if (progress != 1f) {
                 serviceColor = ColorUtils.blendARGB(startServiceColor, serviceColor, progress);
                 serviceTextColor = ColorUtils.blendARGB(startServiceTextColor, serviceTextColor, progress);
@@ -44821,9 +44746,7 @@ public class ChatActivity extends BaseFragment implements
             return;
         }
         if (contentView.getBackgroundImage() == null || AndroidUtilities.isTablet()) {
-            // compact mode starts with its plain background, a chat drawn by the pull-down transition never swaps it in
-            final Drawable drawable = isCompactMode() ? contentView.getCompactBackground() : Theme.getCachedWallpaper();
-            contentView.setBackgroundImage(drawable, !isCompactMode() && Theme.isWallpaperMotion());
+            contentView.setBackgroundImage(Theme.getCachedWallpaper(), Theme.isWallpaperMotion());
         }
     }
 
@@ -47920,7 +47843,7 @@ public class ChatActivity extends BaseFragment implements
                 actionBarBackgroundPaint.setColor(getThemedColor(Theme.key_actionBarDefault));
             }
             if (progressBar != null) {
-                progressBar.setProgressColor(getThemedColor(isCompactMode() ? Theme.key_chat_compact_progress : Theme.key_chat_serviceText));
+                progressBar.setProgressColor(getThemedColor(Theme.key_chat_serviceText));
             }
             if (bottomChannelButtonsLayout != null) {
                 bottomChannelButtonsLayout.setAccentColor(getThemedColor(Theme.key_featuredStickers_addButton));
@@ -48008,9 +47931,6 @@ public class ChatActivity extends BaseFragment implements
     }
 
     private void selectedBackgroundDelegateThemeColors() {
-        if (themeDelegate != null) {
-            themeDelegate.updateCompactResources();
-        }
         if (blurredBackgroundButtonsColorProvider != null) {
             blurredBackgroundButtonsColorProvider.updateColors();
         }
