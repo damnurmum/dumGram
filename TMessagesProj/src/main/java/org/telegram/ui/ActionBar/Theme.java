@@ -1677,9 +1677,9 @@ public class Theme {
             if (isDark != UNKNOWN) {
                 return isDark == DARK;
             }
-            if ("Dark Blue".equals(name) || "Night".equals(name)) {
+            if ("Dark Blue".equals(name) || "Night".equals(name) || "dumGram Dark".equals(name)) {
                 isDark = DARK;
-            } else if ("Blue".equals(name) || "Arctic Blue".equals(name) || "Day".equals(name)) {
+            } else if ("Blue".equals(name) || "Arctic Blue".equals(name) || "Day".equals(name) || "dumGram".equals(name)) {
                 isDark = LIGHT;
             }
             if (isDark == UNKNOWN) {
@@ -4099,6 +4099,42 @@ public class Theme {
         themes.add(themeInfo);
         themesDict.put("Night", themeInfo);
 
+        // dumgram: our pair, both the defaults. the light one is telegram's Day pushed to the logo red
+        // by the accent engine (it recolors the default colors too, so no blue is left over).
+        // its own copy of day.attheme keeps the accent choice apart from Day's, accents are saved per asset
+        themeInfo = new ThemeInfo();
+        themeInfo.name = "dumGram";
+        themeInfo.assetName = "dum_light.attheme";
+        themeInfo.previewBackgroundColor = 0xffffffff;
+        themeInfo.previewInColor = 0xffebeef4;
+        themeInfo.previewOutColor = 0xffe83030;
+        themeInfo.sortIndex = 0;
+        // id 0 has to be day's own blue, the engine shifts away from it. id 1 is ours and the default
+        // own messages: the same darkish red gradient as the dark theme, the engine picks white text for it
+        themeInfo.setAccentColorOptions(
+                new int[]    { 0xFF4C91DF, 0xFFE83030 },
+                new int[]    { 0x00000000, 0xFFA82828 },
+                new int[]    { 0x00000000, 0xFF5E1313 },
+                null, null, null, null,
+                new int[]    {          0,          1 },
+                null, null, null
+                );
+        themeInfo.currentAccentId = 1;
+        sortAccents(themeInfo);
+        themes.add(currentDayTheme = defaultTheme = themeInfo);
+        themesDict.put("dumGram", themeInfo);
+
+        // the dark one is a full theme of its own (warm grays, red accent), so no accents here
+        themeInfo = new ThemeInfo();
+        themeInfo.name = "dumGram Dark";
+        themeInfo.assetName = "dum_dark.attheme";
+        themeInfo.previewBackgroundColor = 0xff161514;
+        themeInfo.previewInColor = 0xff222120;
+        themeInfo.previewOutColor = 0xffe83030;
+        themeInfo.sortIndex = 0;
+        themes.add(themeInfo);
+        themesDict.put("dumGram Dark", currentNightTheme = themeInfo);
+
         String themesString = themeConfig.getString("themes2", null);
 
         int remoteVersion = themeConfig.getInt("remote_version", 0);
@@ -4190,7 +4226,7 @@ public class Theme {
             for (ThemeInfo info : themesDict.values()) {
                 if (info.assetName != null && info.accentBaseColor != 0) {
                     String accents = themeConfig.getString("accents_" + info.assetName, null);
-                    info.currentAccentId = themeConfig.getInt("accent_current_" + info.assetName, info.firstAccentIsDefault ? DEFALT_THEME_ACCENT_ID : 0);
+                    info.currentAccentId = themeConfig.getInt("accent_current_" + info.assetName, info.firstAccentIsDefault ? DEFALT_THEME_ACCENT_ID : "dumGram".equals(info.name) ? 1 : 0);
                     ArrayList<ThemeAccent> newAccents = new ArrayList<>();
                     if (!TextUtils.isEmpty(accents)) {
                         try {
@@ -7204,6 +7240,11 @@ public class Theme {
     }
 
     public static TLRPC.BaseTheme getBaseThemeByKey(String key) {
+        if ("dumGram".equals(key)) {
+            return new TLRPC.TL_baseThemeDay();
+        } else if ("dumGram Dark".equals(key)) {
+            return new TLRPC.TL_baseThemeNight();
+        }
         if ("Blue".equals(key)) {
             return new TLRPC.TL_baseThemeClassic();
         } else if ("Day".equals(key)) {
@@ -9682,7 +9723,19 @@ public class Theme {
                             }
                         }
                     }
-                    motionBackgroundDrawable.setPatternBitmap(intensity, patternBitmap);
+                    // our built-in themes have no pattern file, they get the cats in white soft light,
+                    // same trick as the stock doodles but brightening instead of darkening
+                    final boolean dumPattern = wallpaperFile == null && patternBitmap == null && currentTheme != null
+                        && ("dumGram".equals(currentTheme.name) || "dumGram Dark".equals(currentTheme.name));
+                    if (dumPattern) {
+                        final int w = Math.min(AndroidUtilities.displaySize.x, AndroidUtilities.displaySize.y);
+                        final int h = Math.max(AndroidUtilities.displaySize.x, AndroidUtilities.displaySize.y);
+                        patternBitmap = SvgHelper.getBitmap(R.raw.dum_pattern, w, h, Color.WHITE, 1f, SvgHelper.ScaleMode.ByWidth);
+                    }
+                    motionBackgroundDrawable.setPatternBitmap(dumPattern ? 15 : intensity, patternBitmap);
+                    if (dumPattern) {
+                        motionBackgroundDrawable.setPatternColorFilter(Color.WHITE);
+                    }
                     motionBackgroundDrawable.setPhase(previousPhase);
                     settings.wallpaper = motionBackgroundDrawable;
                 } else if (gradientToColor1 == 0 || gradientToColor1 == backgroundColor) {

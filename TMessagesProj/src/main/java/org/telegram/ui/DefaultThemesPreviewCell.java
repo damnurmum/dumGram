@@ -181,20 +181,20 @@ public class DefaultThemesPreviewCell extends LinearLayout implements Theme.Colo
                     int navBarOldColor = Theme.getColor(Theme.key_windowBackgroundGray);
                     DialogsActivity.switchingTheme = true;
                     SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("themeconfig", Activity.MODE_PRIVATE);
-                    String dayThemeName = preferences.getString("lastDayTheme", "Blue");
+                    String dayThemeName = preferences.getString("lastDayTheme", "dumGram");
                     if (Theme.getTheme(dayThemeName) == null || Theme.getTheme(dayThemeName).isDark()) {
-                        dayThemeName = "Blue";
+                        dayThemeName = "dumGram";
                     }
-                    String nightThemeName = preferences.getString("lastDarkTheme", "Dark Blue");
+                    String nightThemeName = preferences.getString("lastDarkTheme", "dumGram Dark");
                     if (Theme.getTheme(nightThemeName) == null || !Theme.getTheme(nightThemeName).isDark()) {
-                        nightThemeName = "Dark Blue";
+                        nightThemeName = "dumGram Dark";
                     }
                     Theme.ThemeInfo themeInfo = Theme.getActiveTheme();
                     if (dayThemeName.equals(nightThemeName)) {
-                        if (themeInfo.isDark() || dayThemeName.equals("Dark Blue") || dayThemeName.equals("Night")) {
-                            dayThemeName = "Blue";
+                        if (themeInfo.isDark() || dayThemeName.equals("dumGram Dark")) {
+                            dayThemeName = "dumGram";
                         } else {
-                            nightThemeName = "Dark Blue";
+                            nightThemeName = "dumGram Dark";
                         }
                     }
 
@@ -252,10 +252,10 @@ public class DefaultThemesPreviewCell extends LinearLayout implements Theme.Colo
                         }
 
                         if (Theme.isCurrentThemeDay()) {
-                            dayNightCell.setTextAndIcon(LocaleController.getString(R.string.SettingsSwitchToNightMode), darkThemeDrawable, true);
+                            dayNightCell.setTextAndIcon(LocaleController.getString(R.string.SettingsSwitchToNightMode), darkThemeDrawable, showBrowseThemes());
                             dayNightCell.imageLeft += 2;
                         } else {
-                            dayNightCell.setTextAndIcon(LocaleController.getString(R.string.SettingsSwitchToDayMode), darkThemeDrawable, true);
+                            dayNightCell.setTextAndIcon(LocaleController.getString(R.string.SettingsSwitchToDayMode), darkThemeDrawable, showBrowseThemes());
                             dayNightCell.imageLeft += 2;
                         }
 
@@ -273,10 +273,10 @@ public class DefaultThemesPreviewCell extends LinearLayout implements Theme.Colo
 
             if (!Theme.isCurrentThemeDay()) {
                 darkThemeDrawable.setCurrentFrame(darkThemeDrawable.getFramesCount() - 1);
-                dayNightCell.setTextAndIcon(LocaleController.getString(R.string.SettingsSwitchToDayMode), darkThemeDrawable, true);
+                dayNightCell.setTextAndIcon(LocaleController.getString(R.string.SettingsSwitchToDayMode), darkThemeDrawable, showBrowseThemes());
                 dayNightCell.imageLeft += 2;
             } else {
-                dayNightCell.setTextAndIcon(LocaleController.getString(R.string.SettingsSwitchToNightMode), darkThemeDrawable, true);
+                dayNightCell.setTextAndIcon(LocaleController.getString(R.string.SettingsSwitchToNightMode), darkThemeDrawable, showBrowseThemes());
                 dayNightCell.imageLeft += 2;
             }
         }
@@ -440,6 +440,12 @@ public class DefaultThemesPreviewCell extends LinearLayout implements Theme.Colo
         }
     }
 
+    // our built-in themes are picked right here and have nothing more to tune, so no "browse themes" for them
+    private static boolean showBrowseThemes() {
+        final String name = Theme.getActiveTheme().name;
+        return !"dumGram".equals(name) && !"dumGram Dark".equals(name);
+    }
+
     private android.graphics.drawable.Drawable browseThemesBackground;
     private int browseThemesSelectorColor;
 
@@ -453,7 +459,7 @@ public class DefaultThemesPreviewCell extends LinearLayout implements Theme.Colo
                 if (!darkThemeDrawable.isRunning()) {
                     darkThemeDrawable.setCurrentFrame(Theme.isCurrentThemeDay() ? 0 : darkThemeDrawable.getFramesCount() - 1);
                 }
-                dayNightCell.setTextAndIcon(LocaleController.getString(Theme.isCurrentThemeDay() ? R.string.SettingsSwitchToNightMode : R.string.SettingsSwitchToDayMode), darkThemeDrawable, true);
+                dayNightCell.setTextAndIcon(LocaleController.getString(Theme.isCurrentThemeDay() ? R.string.SettingsSwitchToNightMode : R.string.SettingsSwitchToDayMode), darkThemeDrawable, showBrowseThemes());
                 dayNightCell.imageLeft += 2;
             }
         }
@@ -466,6 +472,7 @@ public class DefaultThemesPreviewCell extends LinearLayout implements Theme.Colo
                 dayNightCell.setColors(-1, Theme.key_windowBackgroundWhiteBlueText4);
             }
             if (browseThemesCell != null) {
+                browseThemesCell.setVisibility(showBrowseThemes() ? VISIBLE : GONE);
                 final int backgroundColor = Theme.getColor(Theme.key_windowBackgroundWhite);
                 final int selectorColor = Theme.getColor(Theme.key_listSelector);
                 final android.graphics.drawable.Drawable bg = browseThemesBackground;

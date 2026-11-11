@@ -55,6 +55,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.collection.LongSparseArray;
+import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.Insets;
 import androidx.core.math.MathUtils;
 import androidx.core.view.ViewCompat;
@@ -1339,12 +1340,19 @@ public class SettingsActivity extends BaseFragment implements NotificationCenter
             subtitleView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteGrayText, resourcesProvider));
             valueView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlueText, resourcesProvider));
             iconBackground.setDrawBorder(hasBackground && (resourcesProvider != null ? resourcesProvider.isDark() : Theme.isCurrentThemeDark()));
+            if (hasBackground) {
+                // dumgram: every tile takes the theme's accent instead of its own color,
+                // so a themed app reads as one piece. a touch darker at the bottom keeps the gradient
+                final int accent = Theme.getColor(Theme.key_featuredStickers_addButton, resourcesProvider);
+                iconBackground.setColor(accent, ColorUtils.blendARGB(accent, 0xFF000000, 0.18f));
+            }
         }
         @Override
         public void addColorKeys(HashSet<Integer> colors) {
             colors.add(Theme.key_windowBackgroundWhiteBlackText);
             colors.add(Theme.key_windowBackgroundWhiteGrayText);
             colors.add(Theme.key_windowBackgroundWhiteBlueText);
+            colors.add(Theme.key_featuredStickers_addButton);
         }
 
         private boolean twoLines;
