@@ -1164,8 +1164,6 @@ public class LinkManager {
                 scrollTo("liteModeRow");
             if ("stickers-and-emoji".equalsIgnoreCase(second))
                 scrollTo("stickersRow");
-            if ("app-icon".equalsIgnoreCase(second))
-                scrollTo("appIconSelectorRow");
             if ("tap-for-next-media".equalsIgnoreCase(second))
                 scrollTo("nextMediaTapRow");
 

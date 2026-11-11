@@ -63,8 +63,6 @@ public class StarParticlesView extends View implements Theme.Colorable {
         postDelayed(updateColorsRunnable, 150);
     }
     int size;
-    public final static int TYPE_APP_ICON_REACT = 1001;
-    public static final int TYPE_APP_ICON_STAR_PREMIUM = 1002;
 
     public StarParticlesView(Context context) {
         this(context, (
@@ -390,14 +388,6 @@ public class StarParticlesView extends View implements Theme.Colorable {
                     else if (i == 4) res = R.raw.premium_object_bold;
                     else             res = R.raw.premium_object_code;
                     stars[i] = SvgHelper.getBitmap(res, size, size, ColorUtils.setAlphaComponent(Theme.getColor(colorKey, resourcesProvider), 30));
-                    svg[i] = true;
-                    continue;
-                } else if (type == TYPE_APP_ICON_REACT) {
-                    stars[i] = SvgHelper.getBitmap(R.raw.premium_object_fire, size, size, ColorUtils.setAlphaComponent(Theme.getColor(colorKey, resourcesProvider), 30));
-                    svg[i] = true;
-                    continue;
-                } else if (type == TYPE_APP_ICON_STAR_PREMIUM) {
-                    stars[i] = SvgHelper.getBitmap(R.raw.premium_object_star2, size, size, ColorUtils.setAlphaComponent(Theme.getColor(colorKey, resourcesProvider), 30));
                     svg[i] = true;
                     continue;
                 } else if (type == PremiumPreviewFragment.PREMIUM_FEATURE_SAVED_TAGS) {
