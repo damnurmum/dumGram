@@ -12,12 +12,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -44,7 +46,6 @@ import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Components.ForegroundDetector;
 import org.telegram.ui.Components.ItemOptions;
 import org.telegram.ui.IUpdateLayout;
-import org.telegram.ui.LauncherIconController;
 
 import java.io.File;
 import java.util.Locale;
@@ -355,7 +356,15 @@ public class ApplicationLoader extends Application {
 
         AndroidUtilities.runOnUIThread(ApplicationLoader::startPushService);
 
-        LauncherIconController.tryFixLauncherIconIfNeeded();
+        // old builds had an icon picker that could leave the main launcher entry disabled, switch it back on
+        try {
+            final ComponentName launcher = new ComponentName(applicationContext, "org.telegram.messenger.DefaultIcon");
+            if (applicationContext.getPackageManager().getComponentEnabledSetting(launcher) == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
+                applicationContext.getPackageManager().setComponentEnabledSetting(launcher, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
+            }
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
         ProxyRotationController.init();
 
         //if (BuildConfig.DEBUG_PRIVATE_VERSION) {
