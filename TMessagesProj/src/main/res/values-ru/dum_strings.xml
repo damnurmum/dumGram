@@ -35,6 +35,33 @@
     <string name="DumProxyTgWsWorker">Домен Cloudflare Worker</string>
     <string name="DumProxyTgWsDcIp">Адреса DC, например 2:149.154.167.220</string>
 
+    <string name="DumCatProfile">Профиль и приватность</string>
+    <string name="DumCatProfileInfo">ID, дата-центр, скрытие номера</string>
+    <string name="DumCatChatsInfo">Время с секундами</string>
+    <string name="DumCatInterface">Интерфейс</string>
+    <string name="DumCatInterfaceInfo">Шрифт, нижние вкладки</string>
+    <string name="DumAppFont">Шрифт Onest</string>
+    <string name="DumAppFontInfo">Шрифт приложения в духе Cal Sans, с кириллицей. Меняется после перезапуска.</string>
+    <string name="DumCatNetwork">Сеть</string>
+    <string name="DumCatNetworkInfo">Прокси, TG WS Proxy, ссылки</string>
+    <string name="DumProxies">Прокси и TG WS Proxy</string>
+    <string name="DumProxiesInfo">TG WS Proxy добавляется как обычный прокси, в списке прокси.</string>
+    <string name="DumSearchEmpty">Ничего не найдено</string>
+
+    <string name="DumDonate">Поблагодарить автора</string>
+    <string name="DumDonateInfo">USDT и TON</string>
+    <string name="DumDonateText">dumGram делает один человек в свободное время. Если он вам пригодился, можно поддержать разработку криптой.</string>
+    <string name="DumDonateWhere">Куда отправить</string>
+    <string name="DumDonateNetwork">Сеть TON</string>
+    <string name="DumDonateTon">TON (Gram)</string>
+    <string name="DumDonateHint">Нажмите, чтобы открыть QR-код для кошелька. USDT отправляйте только в сети TON, переводы из других сетей не дойдут.</string>
+    <string name="DumDonateAddress">Адрес кошелька</string>
+    <string name="DumDonateCopy">Скопировать адрес</string>
+    <string name="DumDonateSameAddress">Один адрес и для USDT, и для TON. Спасибо!</string>
+    <string name="DumAddressCopied">Адрес скопирован в буфер обмена</string>
+    <string name="DumDonateQrUsdt">USDT, сеть TON</string>
+    <string name="DumDonateQrHelp">Отсканируйте в приложении кошелька.</string>
+
     <string name="DumAboutHeader">О приложении</string>
     <string name="DumVersion">Версия</string>
     <string name="DumSourceCode">Исходный код на GitHub</string>
