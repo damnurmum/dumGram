@@ -2551,7 +2551,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                         }
                         layoutBlock.xOffset = -(block.isRtl() ? (int) Math.ceil(captionLayout.textXOffset) - offsetX : 0);
                         if (block.code && !block.quote) {
-                            layoutBlock.xOffset += block.compactCode ? dp(MessageObject.TextLayoutBlock.COMPACT_CODE_HPAD) : dp(8);
+                            layoutBlock.xOffset += dp(8);
                         }
                         layoutBlock.charOffset = block.charactersOffset;
                         return;
@@ -2573,7 +2573,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                     }
                     layoutBlock.xOffset = -(block.isRtl() ? (int) Math.ceil(messageObject.textXOffset) - offsetX : 0);
                     if (block.code && !block.quote) {
-                        layoutBlock.xOffset += block.compactCode ? dp(MessageObject.TextLayoutBlock.COMPACT_CODE_HPAD) : dp(8);
+                        layoutBlock.xOffset += dp(8);
                     }
                     layoutBlock.charOffset = block.charactersOffset;
                     return;
@@ -2639,7 +2639,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                     }
                     layoutBlock.xOffset = -(firstBlock.isRtl() ? (int) Math.ceil(captionLayout.textXOffset) - offsetX : 0);
                     if (firstBlock.code && !firstBlock.quote) {
-                        layoutBlock.xOffset += firstBlock.compactCode ? dp(MessageObject.TextLayoutBlock.COMPACT_CODE_HPAD) : dp(8);
+                        layoutBlock.xOffset += dp(8);
                     }
                     layoutBlock.charOffset = 0;
                     return;
@@ -2657,7 +2657,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                         }
                         layoutBlock.xOffset = -(block.isRtl() ? (int) Math.ceil(captionLayout.textXOffset) - offsetX : 0);
                         if (block.code && !block.quote) {
-                            layoutBlock.xOffset += block.compactCode ? dp(MessageObject.TextLayoutBlock.COMPACT_CODE_HPAD) : dp(8);
+                            layoutBlock.xOffset += dp(8);
                         }
                         layoutBlock.charOffset = block.charactersOffset;
                         return;
@@ -2683,7 +2683,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                 }
                 layoutBlock.xOffset = -(firstBlock.isRtl() ? (int) Math.ceil(messageObject.textXOffset) - offsetX : 0);
                 if (firstBlock.code && !firstBlock.quote) {
-                    layoutBlock.xOffset += firstBlock.compactCode ? dp(MessageObject.TextLayoutBlock.COMPACT_CODE_HPAD) : dp(8);
+                    layoutBlock.xOffset += dp(8);
                 }
                 layoutBlock.charOffset = 0;
                 return;
@@ -2701,7 +2701,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                     }
                     layoutBlock.xOffset = -(block.isRtl() ? (int) Math.ceil(messageObject.textXOffset) - offsetX : 0);
                     if (block.code && !block.quote) {
-                        layoutBlock.xOffset += block.compactCode ? dp(MessageObject.TextLayoutBlock.COMPACT_CODE_HPAD) : dp(8);
+                        layoutBlock.xOffset += dp(8);
                     }
                     layoutBlock.charOffset = block.charactersOffset;
                     return;

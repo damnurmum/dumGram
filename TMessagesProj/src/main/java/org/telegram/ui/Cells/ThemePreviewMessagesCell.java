@@ -58,9 +58,6 @@ public class ThemePreviewMessagesCell extends LinearLayout {
 
     private Drawable backgroundDrawable;
     private Drawable oldBackgroundDrawable;
-    private ColorDrawable compactBackground;
-    private boolean wasCompact;
-    private boolean compactAnimation;
     private ChatMessageCell[] cells = new ChatMessageCell[2];
     private Drawable shadowDrawable;
     private INavigationLayout parentLayout;
@@ -484,30 +481,14 @@ public class ThemePreviewMessagesCell extends LinearLayout {
     public boolean customAnimation;
     private final AnimatedFloat overrideDrawableUpdate = new AnimatedFloat(this, 0, 350, CubicBezierInterpolator.EASE_OUT_QUINT);
 
-    private Drawable getCompactBackground() {
-        final int color = Theme.getColor(Theme.key_chat_compact_background);
-        if (compactBackground == null || compactBackground.getColor() != color) {
-            compactBackground = new ColorDrawable(color);
-        }
-        return compactBackground;
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         Drawable newDrawable = overrideDrawable != null ? overrideDrawable : Theme.getCachedWallpaperNonBlocking();
         if (Theme.wallpaperLoadTask != null) {
             invalidate();
         }
-        final boolean compact = overrideDrawable == null && SharedConfig.compactMode;
-        if (compact) {
-            newDrawable = getCompactBackground();
-        }
-        if (wasCompact != compact) {
-            wasCompact = compact;
-            compactAnimation = backgroundDrawable != null;
-        }
         if (newDrawable != backgroundDrawable && newDrawable != null) {
-            if (Theme.isAnimatingColor() || customAnimation || compactAnimation) {
+            if (Theme.isAnimatingColor() || customAnimation) {
                 oldBackgroundDrawable = backgroundDrawable;
                 oldBackgroundGradientDisposable = backgroundGradientDisposable;
             } else if (backgroundGradientDisposable != null) {
@@ -517,7 +498,7 @@ public class ThemePreviewMessagesCell extends LinearLayout {
             backgroundDrawable = newDrawable;
             overrideDrawableUpdate.set(0, true);
         }
-        float themeAnimationValue = customAnimation || compactAnimation ? overrideDrawableUpdate.set(1) : parentLayout.getThemeAnimationValue();
+        float themeAnimationValue = customAnimation ? overrideDrawableUpdate.set(1) : parentLayout.getThemeAnimationValue();
         for (int a = 0; a < 2; a++) {
             Drawable drawable = a == 0 ? oldBackgroundDrawable : backgroundDrawable;
             if (drawable == null) {
@@ -573,7 +554,6 @@ public class ThemePreviewMessagesCell extends LinearLayout {
                     oldBackgroundGradientDisposable = null;
                 }
                 oldBackgroundDrawable = null;
-                compactAnimation = false;
                 invalidate();
             }
         }

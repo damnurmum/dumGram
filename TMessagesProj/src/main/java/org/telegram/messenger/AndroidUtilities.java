@@ -305,12 +305,8 @@ public class AndroidUtilities {
     public static boolean usingHardwareInput;
     public static boolean isInMultiwindow;
 
-    public static int roundPlayingMessageSize(boolean withSidemenu, boolean compact) {
-        if (withSidemenu) {
-            return roundSidePlayingMessageSize;
-        }
-        // compact mode: a playing round video keeps the 16dp edge and a column for its side buttons
-        return compact ? roundPlayingMessageSize - dp(16 + 40 - 28 / 2) : roundPlayingMessageSize;
+    public static int roundPlayingMessageSize(boolean withSidemenu) {
+        return withSidemenu ? roundSidePlayingMessageSize : roundPlayingMessageSize;
     }
 
     public static DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator();

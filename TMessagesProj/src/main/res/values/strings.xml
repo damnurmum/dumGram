@@ -6344,7 +6344,6 @@
     <string name="AccDescrRateTranscriptionUp">Rate up</string>
     <string name="AccDescrRateTranscriptionDown">Rate down</string>
     <string name="PauseMusicOnMedia">Pause music while playing media</string>
-    <string name="CompactMode">Compact Mode</string>
     <string name="ProxyBottomSheetCheckStatus">**Check Status**</string>
     <string name="ProxyBottomSheetChecking">Checking</string>
     <string name="ProxyBottomSheetCheckWarning">Warning</string>

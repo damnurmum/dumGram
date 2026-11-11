@@ -343,7 +343,7 @@ public class ChatPullingDownDrawable implements NotificationCenter.NotificationC
         Theme.applyServiceShaderMatrix(lastWidth, parent.getMeasuredHeight(), 0, parent.getMeasuredHeight() - offset);
 
         updateTopicIconColors();
-        final int textColor = getThemedColor(Theme.isCompactMode(resourcesProvider) ? Theme.key_chat_compact_pullingDownText : Theme.key_chat_serviceText);
+        final int textColor = getThemedColor(Theme.key_chat_serviceText);
         textPaint.setColor(textColor);
         arrowPaint.setColor(textColor);
         textPaint2.setColor(getThemedColor(Theme.key_chat_messagePanelHint));

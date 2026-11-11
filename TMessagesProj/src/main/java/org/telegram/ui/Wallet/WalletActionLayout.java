@@ -709,7 +709,7 @@ public class WalletActionLayout {
         }
 
         if (commentText != null) {
-            final int commentColor = Theme.isCompactMode(resourcesProvider) ? Theme.getColor(Theme.key_chat_compact_actionText, resourcesProvider) : 0xFFFFFFFF;
+            final int commentColor = 0xFFFFFFFF;
             if ((action.comment_encrypted || action.comment_encrypted_preparing) && !preparingCommentRevealed) {
                 canvas.save();
                 canvas.translate((getWidth() - commentText.getWidth()) / 2.0f, dp(143));

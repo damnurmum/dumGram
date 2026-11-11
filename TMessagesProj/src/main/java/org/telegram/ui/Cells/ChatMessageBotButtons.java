@@ -84,11 +84,6 @@ class ChatMessageBotButtons {
             }
             cell.widthForButtons = Math.max(cell.backgroundWidth, Math.min(messageObject.wantedBotKeyboardWidth, maxButtonWidth));
         }
-        if (cell.isCompactLayout()) {
-            // compact: under bare media the buttons match the media, otherwise they span the text width
-            // buttons fill widthForButtons minus 2dp, so add it back to end exactly at the target edge
-            cell.widthForButtons = (cell.mediaBackground ? cell.backgroundWidth - dp(8) : cell.getCompactContentWidth()) + dp(2);
-        }
 
         int maxButtonsWidth = 0;
         HashMap<String, BotButton> oldByData = new HashMap<>(buttonsByData);
@@ -229,10 +224,7 @@ class ChatMessageBotButtons {
                 }
             }
         }
-        if (!cell.isCompactLayout()) {
-            // button positions are fractions of the width they were laid out in; shrinking it would pull the right edge in
-            cell.widthForButtons = maxButtonsWidth;
-        }
+        cell.widthForButtons = maxButtonsWidth;
     }
 
     boolean checkMotionEvent(MotionEvent event) {
@@ -249,8 +241,6 @@ class ChatMessageBotButtons {
             int addX;
             if (cell.currentMessageObject.isOutOwner()) {
                 addX = cell.getMeasuredWidth() - widthForButtons - dp(10);
-            } else if (cell.isCompactLayout()) {
-                addX = cell.getCompactLeft();
             } else {
                 addX = cell.backgroundDrawableLeft + dp(cell.mediaBackground ? 1 : 7);
             }
@@ -343,8 +333,6 @@ class ChatMessageBotButtons {
         int addX;
         if (cell.currentMessageObject != null && cell.currentMessageObject.isOutOwner()) {
             addX = cell.getMeasuredWidth() - widthForButtons - dp(10);
-        } else if (cell.isCompactLayout()) {
-            addX = cell.getCompactLeft();
         } else {
             addX = cell.backgroundDrawableLeft + dp(cell.mediaBackground || cell.drawPinnedBottom ? 1 : 7);
         }
@@ -415,7 +403,7 @@ class ChatMessageBotButtons {
                 }
             }
 
-            if (button.draw(canvas, cell.rect, drawProgress, cell.hasInvoicePreview && cell.hasInvoicePrice, cell.isCompactLayout(), cell.resourcesProvider)) {
+            if (button.draw(canvas, cell.rect, drawProgress, cell.hasInvoicePreview && cell.hasInvoicePrice, cell.resourcesProvider)) {
                 invalidate = true;
             }
         }

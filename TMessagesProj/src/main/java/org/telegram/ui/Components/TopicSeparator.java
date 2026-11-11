@@ -211,7 +211,7 @@ public class TopicSeparator {
                 image.setAlpha(alpha);
                 image.draw(canvas);
             }
-            final int textColor = Theme.getColor(Theme.isCompactMode(resourcesProvider) ? Theme.key_chat_compact_topicSeparatorText : Theme.key_chat_serviceText, resourcesProvider);
+            final int textColor = Theme.getColor(Theme.key_chat_serviceText, resourcesProvider);
             text.draw(canvas, sideMenuWidth / 2f + left + dp(27.66f), top + dp(16.5f), textColor, alpha);
 
             canvas.save();

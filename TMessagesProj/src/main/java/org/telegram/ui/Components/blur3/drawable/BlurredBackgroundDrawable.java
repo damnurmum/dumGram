@@ -324,7 +324,7 @@ public class BlurredBackgroundDrawable extends GlassDrawable implements Theme.Co
         shadowColor = colorProvider.getShadowColor();
         strokeColorTop = colorProvider.getStrokeColorTop();
         strokeColorBottom = colorProvider.getStrokeColorBottom();
-        // the outline and the shadow may follow the theme too (e.g. compact mode's glass)
+        // the outline and the shadow may follow the theme too
         outlineShadowColor = colorProvider.getOutlineShadowColor();
         outlineColor = colorProvider.getOutlineColor();
         outlineWidth = colorProvider.getOutlineWidth();

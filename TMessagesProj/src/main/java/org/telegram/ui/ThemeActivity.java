@@ -301,7 +301,6 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
 
         private ThemePreviewMessagesCell messagesCell;
         private SeekBarView sizeBar;
-        private TextCheckCell compactModeCell;
         private int startFontSize = 12;
         private int endFontSize = 30;
 
@@ -342,32 +341,11 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
             sizeBar.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
             addView(sizeBar, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 38, Gravity.LEFT | Gravity.TOP, 5, 5, 39, 0));
 
-            final boolean showCompactMode = BuildVars.DEBUG_PRIVATE_VERSION;
-            compactModeCell = new TextCheckCell(context);
-            compactModeCell.setBackground(Theme.getSelectorDrawable(false));
-            compactModeCell.setTextAndCheck(getString(R.string.CompactMode), SharedConfig.compactMode, false);
-            compactModeCell.setOnClickListener(v -> {
-                SharedConfig.toggleCompactMode();
-                Theme.applyChatTheme(false, false);
-                compactModeCell.setChecked(SharedConfig.compactMode);
-                for (ChatMessageCell cell : messagesCell.getCells()) {
-                    cell.getMessageObject().resetLayout();
-                    cell.forceResetMessageObject();
-                    cell.requestLayout();
-                }
-                messagesCell.invalidate();
-                // e.g. the tablet background follows compact mode
-                NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.didSetNewWallpapper);
-            });
-            if (showCompactMode) {
-                addView(compactModeCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 50, Gravity.LEFT | Gravity.TOP, 0, 48, 0, 0));
-            }
-
             messagesCell = new ThemePreviewMessagesCell(context, parentLayout, 0);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 messagesCell.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
             }
-            addView(messagesCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 0, 53 + (showCompactMode ? 50 : 0), 0, 0));
+            addView(messagesCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 0, 53, 0, 0));
         }
 
         @Override

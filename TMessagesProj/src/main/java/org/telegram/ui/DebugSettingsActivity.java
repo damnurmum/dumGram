@@ -104,7 +104,6 @@ public class DebugSettingsActivity extends UniversalFragment {
     private static final int ID_CLEAR_WIDGET_HEIGHTS = 43;
     private static final int ID_WIDGET_STATIC_LAYERS = 44;
     private static final int ID_FORGET_HINTS = 45;
-    private static final int ID_COMPACT_MODE = 46;
 
     @Override
     protected boolean useSimpleActionBar() {
@@ -202,7 +201,6 @@ public class DebugSettingsActivity extends UniversalFragment {
             items.add(UItem.asCheck(ID_VIEW_METRICS, "Debug view metrics").setChecked(SharedConfig.debugViewMetrics));
             items.add(UItem.asCheck(ID_WIDGET_STATIC_LAYERS, "Widget static layers").setChecked(SharedConfig.widgetStaticLayers));
         }
-        items.add(UItem.asCheck(ID_COMPACT_MODE, getString(R.string.CompactMode)).setChecked(SharedConfig.compactMode));
         items.add(UItem.asShadow(null));
 
         items.add(UItem.asHeader("Camera and media"));
@@ -272,10 +270,6 @@ public class DebugSettingsActivity extends UniversalFragment {
                 break;
             case ID_CLEAR_MEDIA_CACHE:
                 clearSentMediaCache();
-                break;
-            case ID_COMPACT_MODE:
-                SharedConfig.toggleCompactMode();
-                Theme.applyChatTheme(false, false);
                 break;
             case ID_FORGET_HINTS:
                 forgetAllHints();

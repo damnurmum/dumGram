@@ -302,7 +302,6 @@ public class SharedConfig {
     public static boolean saveStreamMedia = true;
     public static boolean pauseMusicOnRecord = false;
     public static boolean pauseMusicOnMedia = false;
-    public static boolean compactMode = false;
     public static boolean noiseSupression;
     public static boolean debugWebView;
     /** Experimental: a widget frame unchanged for a third of a second is drawn from a compositing layer. */
@@ -629,8 +628,6 @@ public class SharedConfig {
             saveStreamMedia = preferences.getBoolean("saveStreamMedia", true);
             pauseMusicOnRecord = preferences.getBoolean("pauseMusicOnRecord", true);
             pauseMusicOnMedia = preferences.getBoolean("pauseMusicOnMedia", false);
-            // compact mode is still in development: private beta only
-            compactMode = preferences.getBoolean("compactMode", false);
             forceDisableTabletMode = preferences.getBoolean("forceDisableTabletMode", false);
             streamAllVideo = preferences.getBoolean("streamAllVideo", BuildVars.DEBUG_VERSION);
             streamMkv = preferences.getBoolean("streamMkv", false);
@@ -1386,19 +1383,6 @@ public class SharedConfig {
         SharedPreferences preferences = MessagesController.getGlobalMainSettings();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("pauseMusicOnMedia", pauseMusicOnMedia);
-        editor.apply();
-    }
-
-    /** Compact mode of a dialog: the app's setting, and agent bot chats are always compact. */
-    public static boolean isCompactMode(int currentAccount, long dialogId) {
-        return compactMode || dialogId > 0 && AppGlobalConfig.getInstance(currentAccount).agentBotIds.contains(dialogId);
-    }
-
-    public static void toggleCompactMode() {
-        compactMode = !compactMode;
-        SharedPreferences preferences = MessagesController.getGlobalMainSettings();
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("compactMode", compactMode);
         editor.apply();
     }
 

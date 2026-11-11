@@ -328,10 +328,7 @@ class ChatMessageAudio {
                 seekBarX + dp(13 + 8) + seekBarWidth,
                 cell.currentMessageObject != null && cell.currentMessageObject.isOutOwner() ?
                     cell.getCurrentBackgroundLeft() - dp(32 + 8) + dp(28) * playingRoundAlpha :
-                    cell.isCompactLayout() ?
-                        // compact: next to the circle, also while it grows to its playing size
-                        Math.min(cell.getPhotoImage().getImageX2() + dp(8), cell.getCompactRight() - dp(32)) :
-                        cell.getCurrentBackgroundRight() + dp(8) - dp(40) * playingRoundAlpha,
+                    cell.getCurrentBackgroundRight() + dp(8) - dp(40) * playingRoundAlpha,
                 1f - cell.getVideoTranscriptionProgress()
             );
             float y = cell.layoutHeight + cell.transitionParams.deltaBottom - dp(28 - (cell.drawPinnedBottom ? 2 : 0));
@@ -355,7 +352,7 @@ class ChatMessageAudio {
         );
         cell.transcribeButton.setColor(
             ColorUtils.blendARGB(
-                cell.getThemedColor(cell.isCompactLayout() ? Theme.key_chat_compact_sideButtonIcon : Theme.key_chat_serviceText),
+                cell.getThemedColor(Theme.key_chat_serviceText),
                 cell.getThemedColor(cell.currentMessageObject.isOutOwner() ? Theme.key_chat_outReactionButtonBackground : Theme.key_chat_inReactionButtonBackground),
                 cell.documentAttachType == ChatMessageCell.DOCUMENT_ATTACH_TYPE_AUDIO ? 1 : cell.getVideoTranscriptionProgress()
             ),

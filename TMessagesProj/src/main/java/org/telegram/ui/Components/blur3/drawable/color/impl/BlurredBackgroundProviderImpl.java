@@ -167,48 +167,7 @@ public class BlurredBackgroundProviderImpl {
     }
 
     public static BlurredBackgroundProvider topPanelChatActivity(Theme.ResourcesProvider resourcesProvider) {
-        // compact mode's glass follows the design: no white outline, a soft shadow and a tight one as its outline
-        return new BlurredBackgroundProviderBuilder(resourcesProvider) {
-                @Override
-                public int getStrokeColorTop() {
-                    return compactGlassStroke(super.getStrokeColorTop(), resourcesProvider);
-                }
-
-                @Override
-                public int getStrokeColorBottom() {
-                    return compactGlassStroke(super.getStrokeColorBottom(), resourcesProvider);
-                }
-
-                @Override
-                public int getShadowColor() {
-                    return Theme.isCompactMode(resourcesProvider) ? Theme.getColor(Theme.key_chat_compact_glassShadow, resourcesProvider) : super.getShadowColor();
-                }
-
-                @Override
-                public float getShadowRadius() {
-                    return Theme.isCompactMode(resourcesProvider) ? dpf2(2.25f) : super.getShadowRadius();
-                }
-
-                @Override
-                public float getShadowDy() {
-                    return Theme.isCompactMode(resourcesProvider) ? dpf2(1) : super.getShadowDy();
-                }
-
-                @Override
-                public int getOutlineShadowColor() {
-                    return Theme.isCompactMode(resourcesProvider) ? Theme.getColor(Theme.key_chat_compact_glassHairline, resourcesProvider) : 0;
-                }
-
-                @Override
-                public int getOutlineColor() {
-                    return Theme.isCompactMode(resourcesProvider) ? Theme.getColor(Theme.key_chat_compact_glassOutline, resourcesProvider) : 0;
-                }
-
-                @Override
-                public float getOutlineWidth() {
-                    return dpf2(0.6f);
-                }
-            }
+        return new BlurredBackgroundProviderBuilder(resourcesProvider)
                 .setBackgroundColor((r, isDark) -> {
                     if (!checkBlurEnabled(resourcesProvider)) {
                         return ColorUtils.setAlphaComponent(Theme.getColor(isDark ?
@@ -225,12 +184,6 @@ public class BlurredBackgroundProviderImpl {
                 //.setShadowLayer(dpf2(10 / 3f), 0, dpf2(2 / 3f))
                 .setStrokeWidth(dpf2(0.55f), dpf2(0.55f))
                 .build();
-    }
-
-    // with the design's outline there is no white highlight on the glass
-    private static int compactGlassStroke(int color, Theme.ResourcesProvider resourcesProvider) {
-        if (!Theme.isCompactMode(resourcesProvider)) return color;
-        return Color.alpha(Theme.getColor(Theme.key_chat_compact_glassOutline, resourcesProvider)) != 0 ? 0 : color;
     }
 
     public static BlurredBackgroundProvider simpleActionBar(Theme.ResourcesProvider resourcesProvider) {

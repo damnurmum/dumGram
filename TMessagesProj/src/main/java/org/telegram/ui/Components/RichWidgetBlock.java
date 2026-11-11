@@ -140,8 +140,7 @@ public final class RichWidgetBlock extends RichMessageLayout.RichBlock
     private void estimateSafeArea() {
         org.telegram.messenger.MessageObject object = root.messageObject;
         if (message == null || object == null || object.messageOwner == null) return;
-        boolean over = !(object.isCompactMode() && !object.isOutOwner())
-                && (android.text.TextUtils.isEmpty(object.messageOwner.message) || object.messageOwner.invert_media);
+        boolean over = android.text.TextUtils.isEmpty(object.messageOwner.message) || object.messageOwner.invert_media;
         if (!over) {
             message.setSafeArea(0, 0, false);
             return;

@@ -284,7 +284,7 @@ public class UserInfoCell extends View implements NotificationCenter.Notificatio
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
 
-        final int textColor = Theme.isCompactMode(resourcesProvider) ? Theme.getColor(Theme.key_chat_compact_actionText, resourcesProvider) : Color.WHITE;
+        final int textColor = Color.WHITE;
         if (groupsArrowColor != textColor) {
             groupsArrow.setColorFilter(new PorterDuffColorFilter(groupsArrowColor = textColor, PorterDuff.Mode.SRC_IN));
         }

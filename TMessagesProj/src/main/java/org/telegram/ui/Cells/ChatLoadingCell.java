@@ -56,7 +56,7 @@ public class ChatLoadingCell extends FrameLayout implements Theme.Colorable {
 
         progressBar = new RadialProgressView(context, resourcesProvider);
         progressBar.setSize(dp(28));
-        progressBar.setProgressColor(getThemedColor(Theme.isCompactMode(resourcesProvider) ? Theme.key_chat_compact_progress : Theme.key_chat_serviceText));
+        progressBar.setProgressColor(getThemedColor(Theme.key_chat_serviceText));
         frameLayout.addView(progressBar, LayoutHelper.createFrame(32, 32, Gravity.CENTER));
     }
 
@@ -107,7 +107,7 @@ public class ChatLoadingCell extends FrameLayout implements Theme.Colorable {
     @Override
     public void updateColors() {
         try {
-            progressBar.setProgressColor(getThemedColor(Theme.isCompactMode(resourcesProvider) ? Theme.key_chat_compact_progress : Theme.key_chat_serviceText));
+            progressBar.setProgressColor(getThemedColor(Theme.key_chat_serviceText));
             invalidate();
         } catch (Exception e) {
             FileLog.e(e);
