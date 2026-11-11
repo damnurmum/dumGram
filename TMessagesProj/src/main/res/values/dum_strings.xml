@@ -35,6 +35,33 @@
     <string name="DumProxyTgWsWorker">Cloudflare Worker domain</string>
     <string name="DumProxyTgWsDcIp">DC addresses, e.g. 2:149.154.167.220</string>
 
+    <string name="DumCatProfile">Profile and privacy</string>
+    <string name="DumCatProfileInfo">ID, data center, hiding your number</string>
+    <string name="DumCatChatsInfo">Time with seconds</string>
+    <string name="DumCatInterface">Interface</string>
+    <string name="DumCatInterfaceInfo">Font, bottom tabs</string>
+    <string name="DumAppFont">Onest font</string>
+    <string name="DumAppFontInfo">The app font, close to Cal Sans and with cyrillic. Applies after a restart.</string>
+    <string name="DumCatNetwork">Network</string>
+    <string name="DumCatNetworkInfo">Proxy, TG WS Proxy, links</string>
+    <string name="DumProxies">Proxy and TG WS Proxy</string>
+    <string name="DumProxiesInfo">TG WS Proxy is added like any other proxy, in the proxy list.</string>
+    <string name="DumSearchEmpty">Nothing found</string>
+
+    <string name="DumDonate">Thank the author</string>
+    <string name="DumDonateInfo">USDT and TON</string>
+    <string name="DumDonateText">dumGram is made by one person in their spare time. If it came in handy, you can support it with crypto.</string>
+    <string name="DumDonateWhere">Send to</string>
+    <string name="DumDonateNetwork">TON network</string>
+    <string name="DumDonateTon">TON (Gram)</string>
+    <string name="DumDonateHint">Tap to show a QR code for your wallet. Send USDT only over the TON network, transfers from other networks won\'t arrive.</string>
+    <string name="DumDonateAddress">Wallet address</string>
+    <string name="DumDonateCopy">Copy address</string>
+    <string name="DumDonateSameAddress">One address for both USDT and TON. Thank you!</string>
+    <string name="DumAddressCopied">Address copied to clipboard</string>
+    <string name="DumDonateQrUsdt">USDT, TON network</string>
+    <string name="DumDonateQrHelp">Scan it in your wallet app.</string>
+
     <string name="DumAboutHeader">About</string>
     <string name="DumVersion">Version</string>
     <string name="DumSourceCode">Source code on GitHub</string>
