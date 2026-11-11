@@ -145,6 +145,7 @@ public class SimpleTextView extends View implements Drawable.Callback {
     public SimpleTextView(Context context) {
         super(context);
         textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setTypeface(Typeface.DEFAULT); // dumgram swaps DEFAULT for its font, a bare paint would ignore that
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
     }
 

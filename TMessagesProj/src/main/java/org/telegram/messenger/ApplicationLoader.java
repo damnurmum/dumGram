@@ -294,6 +294,7 @@ public class ApplicationLoader extends Application {
 
         // AndroidUtilities must be initialized before FileLog
         final String helloWorld = AndroidUtilities.getHelloWorld();
+        DumFonts.apply(); // before any view or paint exists, they pick the default up on creation
 
         if (BuildVars.LOGS_ENABLED) {
             FileLog.d(helloWorld);
