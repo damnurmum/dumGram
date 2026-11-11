@@ -787,7 +787,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
             swipeGestureInfoRow = rowCount++;
 
             nightThemeRow = rowCount++;
-            browserRow = rowCount++;
+            // browserRow: lives in settings > dumGram now
             liteModeRow = rowCount++;
             stickersRow = rowCount++;
             stickersSectionRow = rowCount++;
@@ -806,7 +806,8 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
             otherHeaderRow = rowCount++;
             directShareRow = rowCount++;
             TL_account.contentSettings contentSettings = getMessagesController().getContentSettings();
-            if (contentSettings != null && contentSettings.sensitive_can_change) {
+            // dumgram turns 18+ on by itself, the row only stays for accounts that need an age check
+            if (contentSettings != null && contentSettings.sensitive_can_change && !contentSettings.sensitive_enabled) {
                 sensitiveContentRow = rowCount++;
             }
             sendByEnterRow = rowCount++;

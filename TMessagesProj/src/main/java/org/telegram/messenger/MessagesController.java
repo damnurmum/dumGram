@@ -24768,6 +24768,12 @@ public class MessagesController extends BaseController implements NotificationCe
             if (res instanceof TL_account.contentSettings) {
                 contentSettings = (TL_account.contentSettings) res;
                 contentSettingsLoadedTime = System.currentTimeMillis();
+                // dumgram: 18+ content is on by default. where the server wants an age check first
+                // we leave it alone, that goes through the normal row in chat settings
+                final boolean ageCheck = !TextUtils.isEmpty(verifyAgeBotUsername) && config.needAgeVideoVerification.get();
+                if (contentSettings.sensitive_can_change && !contentSettings.sensitive_enabled && !ageCheck) {
+                    setContentSettings(true);
+                }
             }
             contentSettingsLoading = false;
             if (contentSettings != null && ignoreRestrictionReasons != null) {
