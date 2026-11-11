@@ -38,7 +38,12 @@ jobs:
 
       - name: Install NDK, CMake, NASM
         run: |
-          sudo apt-get install -y nasm
+          # the runner's ubuntu mirror goes down now and then, so build nasm from source if apt can't get it
+          sudo apt-get install -y nasm || (
+            curl -fsSL https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/nasm-2.16.03.tar.xz | tar -xJ -C /tmp &&
+            cd /tmp/nasm-2.16.03 && ./configure -q && make -s -j"$(nproc)" && sudo make -s install
+          )
+          nasm -v
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "ndk;27.2.12479018" "cmake;3.22.1" "build-tools;36.0.0" > /dev/null
 
       # PRs from forks don't get secrets, so they fall back to gradle.properties and the
