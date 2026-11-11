@@ -356,8 +356,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
         final int emojiCount    = mediaDataController.getStickerSets(TYPE_EMOJIPACKS).size();
 
         if (currentType == TYPE_IMAGE) {
-            featuredRow = items.size();
-            items.add(UItem.asButton(ID_FEATURED, R.drawable.msg2_trending, getString(R.string.FeaturedStickers), featuredCount > 0 ? formatNumber(featuredCount, ',') : ""));
+            // dumgram: no "trending stickers" entry
             if (archivedCount > 0) {
                 archivedRow = items.size();
                 if (currentType == TYPE_IMAGE) {
@@ -432,24 +431,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
             featured = new ArrayList<>(featured.subList(0, 3));
             truncatedFeaturedStickers = true;
         }
-        if (currentType == TYPE_EMOJIPACKS && !featured.isEmpty()) {
-            if (sets.size() > 0) {
-                items.add(UItem.asShadow(null));
-            }
-
-            items.add(UItem.asHeader(getString(currentType == TYPE_EMOJIPACKS ? R.string.FeaturedEmojiPacks : R.string.FeaturedStickers)));
-            for (TLRPC.StickerSetCovered set : featured) {
-                final UItem featuredItem =
-                    FeaturedStickerSetCell2.Factory.of(set)
-                        .setClickCallback(this::onFeaturedAddClick)
-                        .setLocked(loadingFeaturedStickerSets.contains(set.set.id));
-                items.add(featuredItem);
-            }
-
-            if (truncatedFeaturedStickers) {
-                items.add(UItem.asButton(ID_SHOW_MORE_FEATURED, R.drawable.msg2_trending, getString(R.string.ShowMoreEmojiPacks)).accent());
-            }
-        }
+        // dumgram: the "trending emoji" block under the emoji packs is gone too
 
         if (currentType == TYPE_EMOJIPACKS) {
             items.add(UItem.asShadow(addStickersBotSpan(getString(currentType == TYPE_EMOJIPACKS ? R.string.EmojiBotInfo : R.string.StickersBotInfo))));
