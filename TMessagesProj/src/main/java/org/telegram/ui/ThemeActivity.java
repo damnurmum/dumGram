@@ -726,6 +726,8 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 if (themeInfo.isLight() || themeInfo.info != null && themeInfo.info.document == null) {
                     continue;
                 }
+            } else if ("dumGram".equals(themeInfo.name) || "dumGram Dark".equals(themeInfo.name)) {
+                continue; // ours live in the home tile, no need to list them twice
             }
             if (themeInfo.pathToFile != null) {
                 darkThemes.add(themeInfo);

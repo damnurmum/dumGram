@@ -238,25 +238,17 @@ public class EmojiThemes {
         themeItem.key = ThemeKey.ofEmoticon(themeItem.emoji);
         themeItem.chatTheme = TLRPC.ChatTheme.ofEmoticon(themeItem.emoji);
 
-        ThemeItem blue = new ThemeItem();
-        blue.themeInfo = Theme.getTheme("Blue");
-        blue.accentId = 99;
-        themeItem.items.add(blue);
-
-        ThemeItem day = new ThemeItem();
-        day.themeInfo = Theme.getTheme("Day");
-        day.accentId = 9;
-        themeItem.items.add(day);
-
-        ThemeItem night = new ThemeItem();
-        night.themeInfo = Theme.getTheme("Night");
-        night.accentId = 0;
-        themeItem.items.add(night);
-
-        ThemeItem nightBlue = new ThemeItem();
-        nightBlue.themeInfo = Theme.getTheme("Dark Blue");
-        nightBlue.accentId = 0;
-        themeItem.items.add(nightBlue);
+        // dumgram: the home tile is our pair instead of telegram's blue ones.
+        // the cell reads slots 0/1 by day and 2/3 by night. dumGram Dark has no accents, its accent id stays 0,
+        // and the tile only shows as selected when that id matches
+        final Theme.ThemeInfo light = Theme.getTheme("dumGram");
+        final Theme.ThemeInfo dark = Theme.getTheme("dumGram Dark");
+        for (int i = 0; i < 4; i++) {
+            ThemeItem item = new ThemeItem();
+            item.themeInfo = i < 2 ? light : dark;
+            item.accentId = i < 2 ? 1 : 0;
+            themeItem.items.add(item);
+        }
         return themeItem;
     }
 
@@ -266,15 +258,16 @@ public class EmojiThemes {
         themeItem.key = ThemeKey.ofEmoticon(themeItem.emoji);
         themeItem.chatTheme = TLRPC.ChatTheme.ofEmoticon(themeItem.emoji);
 
-        ThemeItem blue = new ThemeItem();
-        blue.themeInfo = Theme.getTheme("Blue");
-        blue.accentId = 99;
-        themeItem.items.add(blue);
+        // dumgram: same pair behind the profile QR code
+        ThemeItem light = new ThemeItem();
+        light.themeInfo = Theme.getTheme("dumGram");
+        light.accentId = 1;
+        themeItem.items.add(light);
 
-        ThemeItem nightBlue = new ThemeItem();
-        nightBlue.themeInfo = Theme.getTheme("Dark Blue");
-        nightBlue.accentId = 0;
-        themeItem.items.add(nightBlue);
+        ThemeItem dark = new ThemeItem();
+        dark.themeInfo = Theme.getTheme("dumGram Dark");
+        dark.accentId = 0;
+        themeItem.items.add(dark);
 
         return themeItem;
     }
